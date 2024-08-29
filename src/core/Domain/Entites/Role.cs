@@ -1,7 +1,8 @@
+using Microsoft.AspNetCore.Identity;
+
 namespace Domain.Entites;
 
-public class Role
+public class Role : IdentityRole<Guid>
 {
-	public Guid Id{get; set;}
-	public string RoleName{get; set;} 
+	
 }
