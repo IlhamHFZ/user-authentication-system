@@ -9,5 +9,6 @@ public class User
 	public string Password {get; set;}
 	public bool IsValid {get; set;}
 	public DateTime CreatedDate {get; set;}
+	public Role Role {get; set;}
 	
 }
