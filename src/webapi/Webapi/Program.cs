@@ -1,3 +1,5 @@
+using Domain.Entites;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Presistence.Context;
 
@@ -13,6 +15,10 @@ builder.Services.AddDbContext<DataContext>(opt =>
 {
 	opt.UseMySQL(builder.Configuration.GetConnectionString("Database"));
 });
+
+builder.Services.AddIdentity<User, Role>()
+	.AddEntityFrameworkStores<DataContext>()
+	.AddDefaultTokenProviders();
 
 
 var app = builder.Build();
