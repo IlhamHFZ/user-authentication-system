@@ -16,8 +16,17 @@ builder.Services.AddDbContext<DataContext>(opt =>
 	opt.UseMySQL(builder.Configuration.GetConnectionString("Database"));
 });
 
-builder.Services.AddIdentity<User, Role>()
-	.AddEntityFrameworkStores<DataContext>()
+builder.Services.AddIdentity<User, Role>(opt =>
+{
+	opt.Password.RequireDigit = true;
+	opt.Password.RequireLowercase = true;
+	opt.Password.RequireUppercase = true;
+	opt.Password.RequiredUniqueChars = 1;
+	
+	opt.User.RequireUniqueEmail = true;
+	
+})
+.AddEntityFrameworkStores<DataContext>()
 	.AddDefaultTokenProviders();
 
 
