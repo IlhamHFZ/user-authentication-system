@@ -1,4 +1,5 @@
-using Presistence;
+using Microsoft.EntityFrameworkCore;
+using Presistence.Context;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -8,7 +9,11 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.ConfigurePresistence(builder.Configuration);
+builder.Services.AddDbContext<DataContext>(opt => 
+{
+	opt.UseMySQL(builder.Configuration.GetConnectionString("Database"));
+});
+
 
 var app = builder.Build();
 
