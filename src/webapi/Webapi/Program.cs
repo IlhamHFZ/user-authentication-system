@@ -1,6 +1,9 @@
+using System.Text;
 using Domain.Entites;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using Presistence.Context;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -15,6 +18,22 @@ builder.Services.AddDbContext<DataContext>(opt =>
 {
 	opt.UseMySQL(builder.Configuration.GetConnectionString("Database"));
 });
+
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+	.AddJwtBearer(options =>
+	{
+		options.TokenValidationParameters = new TokenValidationParameters()
+		{
+			ValidateIssuer = true,
+			ValidateAudience = true,
+			ValidateLifetime = true,
+			RequireExpirationTime = true,
+			ValidateIssuerSigningKey = true,
+			IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:SecretKey"])),
+			ValidAudience = builder.Configuration["Jwt:Audience"],
+			ValidIssuer = builder.Configuration["Jwt:Issuer"]
+		};
+	});
 
 builder.Services.AddIdentity<User, Role>(opt =>
 {
@@ -40,7 +59,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
