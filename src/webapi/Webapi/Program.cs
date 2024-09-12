@@ -1,10 +1,13 @@
 using System.Text;
+using Application.Repository.Interface;
 using Domain.Entites;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Presistence.Context;
+using Presistence.Repository;
+using Presistence.Repository.Interface;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -47,6 +50,9 @@ builder.Services.AddIdentity<User, Role>(opt =>
 	.AddEntityFrameworkStores<DataContext>()
 	.AddDefaultTokenProviders();
 
+builder.Services.AddScoped<IUnitofWork, UnitofWork>();
+builder.Services.AddScoped<IRepository<User>, Repository<User>>();
+builder.Services.AddScoped<IRepository<Role>, Repository<Role>>();
 
 var app = builder.Build();
 
