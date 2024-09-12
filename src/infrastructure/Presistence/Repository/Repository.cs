@@ -20,7 +20,7 @@ public class Repository<T> : IRepository<T> where T : class
 		await _set.AddAsync(entity);
 	}
 
-	public void DeleteAsync(T entity)
+	public void Delete(T entity)
 	{
 		_set.Remove(entity);
 	}
@@ -35,7 +35,7 @@ public class Repository<T> : IRepository<T> where T : class
 		return await _set.FindAsync(id);
 	}
 
-	public void UpdateAsync(T entity)
+	public void Update(T entity)
 	{
 		_set.Update(entity);
 	}
