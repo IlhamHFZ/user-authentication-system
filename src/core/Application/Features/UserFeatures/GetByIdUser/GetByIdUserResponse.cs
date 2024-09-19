@@ -1,6 +1,6 @@
 namespace Application.Features.UserFeatures.GetByIdUser;
 
-public record GetAllUserResponse
+public record GetByIdUserResponse
 {
 	public Guid Id { get; set; }
 	public string UserName { get; set; }
