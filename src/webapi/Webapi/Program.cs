@@ -8,6 +8,7 @@ using Microsoft.IdentityModel.Tokens;
 using Presistence.Context;
 using Presistence.Repository;
 using Presistence.Repository.Interface;
+using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -53,6 +54,8 @@ builder.Services.AddIdentity<User, Role>(opt =>
 builder.Services.AddScoped<IUnitofWork, UnitofWork>();
 builder.Services.AddScoped<IRepository<User>, Repository<User>>();
 builder.Services.AddScoped<IRepository<Role>, Repository<Role>>();
+
+builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
 
 var app = builder.Build();
 
