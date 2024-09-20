@@ -1,4 +1,3 @@
-using Application.Repository.Interface;
 using Presistence.Context;
 using Presistence.Repository.Interface;
 
