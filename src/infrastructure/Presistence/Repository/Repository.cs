@@ -1,4 +1,4 @@
-using Application.Repository.Interface;
+using Presistence.Repository.Interface;
 using Microsoft.EntityFrameworkCore;
 using Presistence.Context;
 
