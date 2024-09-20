@@ -1,4 +1,4 @@
-using Application.Repository.Interface;
+using Presistence.Repository.Interface;
 
 namespace Presistence.Repository.Interface;
 
