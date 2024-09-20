@@ -1,4 +1,4 @@
-namespace Application.Repository.Interface;
+namespace Presistence.Repository.Interface;
 
 public interface IRepository<T> where T : class
 {
