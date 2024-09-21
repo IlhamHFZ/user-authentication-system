@@ -2,7 +2,7 @@ using AutoMapper;
 using Domain.Entites;
 using Presistence.Repository.Interface;
 
-namespace Application.Features.UserFeatures.UpdateUser;
+namespace Application.Features.UserFeatures.UpdateUserProfile;
 
 public class UpdateUserProfileHandler
 {
