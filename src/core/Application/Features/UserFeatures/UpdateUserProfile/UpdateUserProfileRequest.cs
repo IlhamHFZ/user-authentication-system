@@ -1,4 +1,4 @@
-namespace Application.Features.UserFeatures.UpdateUser;
+namespace Application.Features.UserFeatures.UpdateUserProfile;
 
 public record class UpdateUserProfileRequest
 {
