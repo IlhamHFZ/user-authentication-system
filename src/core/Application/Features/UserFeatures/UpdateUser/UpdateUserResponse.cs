@@ -8,5 +8,4 @@ public record class UpdateUserResponse
 	public string UserName {get; set;}
 	public string DisplayName {get; set;}
 	public Role Role {get; set;}
-	
 }
