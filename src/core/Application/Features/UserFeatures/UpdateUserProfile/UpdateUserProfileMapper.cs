@@ -1,7 +1,7 @@
 using AutoMapper;
 using Domain.Entites;
 
-namespace Application.Features.UserFeatures.UpdateUser;
+namespace Application.Features.UserFeatures.UpdateUserProfile;
 
 public class UpdateUserProfileMapper : Profile
 {
