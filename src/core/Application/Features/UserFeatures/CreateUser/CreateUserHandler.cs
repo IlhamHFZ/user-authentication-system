@@ -15,7 +15,7 @@ public class CreateUserHandler
 		_mapper = mapper;
 	}
 	
-	public async Task Handle(CreateUserRequest request)
+	public async Task<CreateUserResponse> Handle(CreateUserRequest request)
 	{
 		
 		var validator = new CreateUserValidator();
@@ -26,10 +26,12 @@ public class CreateUserHandler
 		*/
 		if(!result.IsValid)
 		{
-			return;
+			return null;
 		}
 		var user = _mapper.Map<User>(request);
 		await _unitofWork.Repository<User>().CreateAsync(user);
 		await _unitofWork.SaveChangeAsync();
+		
+		return _mapper.Map<CreateUserResponse>(user);
 	}
 }
