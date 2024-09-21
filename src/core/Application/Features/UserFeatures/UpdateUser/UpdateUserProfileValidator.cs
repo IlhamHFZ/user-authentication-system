@@ -1,11 +1,10 @@
-using Domain.Entites;
 using FluentValidation;
 
 namespace Application.Features.UserFeatures.UpdateUser;
 
-public class UpdateUserValidator : AbstractValidator<UpdateUserRequest>
+public class UpdateUserProfileValidator : AbstractValidator<UpdateUserRequest>
 {
-	public UpdateUserValidator()
+	public UpdateUserProfileValidator()
 	{
 		RuleFor(user => user.UserName)
 			.MinimumLength(3)
