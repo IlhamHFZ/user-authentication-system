@@ -2,7 +2,7 @@ using FluentValidation;
 
 namespace Application.Features.UserFeatures.UpdateUser;
 
-public class UpdateUserProfileValidator : AbstractValidator<UpdateUserRequest>
+public class UpdateUserProfileValidator : AbstractValidator<UpdateUserProfileRequest>
 {
 	public UpdateUserProfileValidator()
 	{
