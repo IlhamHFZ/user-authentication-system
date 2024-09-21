@@ -1,6 +1,6 @@
 namespace Application.Features.UserFeatures.UpdateUser;
 
-public record class UpdateUserRequest
+public record class UpdateUserProfileRequest
 {
 	public Guid Id {get; set;}
 	public string UserName {get; set;}
