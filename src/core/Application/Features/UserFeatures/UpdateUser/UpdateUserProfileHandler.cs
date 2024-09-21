@@ -4,20 +4,20 @@ using Presistence.Repository.Interface;
 
 namespace Application.Features.UserFeatures.UpdateUser;
 
-public class UpdateUserHandler
+public class UpdateUserProfileHandler
 {
 	private readonly IUnitofWork _unitofWork;
 	private readonly IMapper _mapper;
 	
-	public UpdateUserHandler(IUnitofWork unitofWork, IMapper mapper)
+	public UpdateUserProfileHandler(IUnitofWork unitofWork, IMapper mapper)
 	{
 		_unitofWork = unitofWork;
 		_mapper = mapper;
 	}
 	
-	public async Task<UpdateUserResponse> Handle(UpdateUserRequest request)
+	public async Task<UpdateUserProfileResponse> Handle(UpdateUserProfileRequest request)
 	{
-		var validator = new UpdateUserValidator();
+		var validator = new UpdateUserProfileValidator();
 		var result = validator.Validate(request);
 		if(!result.IsValid)
 		{
@@ -30,6 +30,6 @@ public class UpdateUserHandler
 		
 		await _unitofWork.SaveChangeAsync();
 		
-		return _mapper.Map<UpdateUserResponse>(user);
+		return _mapper.Map<UpdateUserProfileResponse>(user);
 	}
 }
