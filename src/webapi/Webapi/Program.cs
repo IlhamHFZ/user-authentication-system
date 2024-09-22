@@ -52,8 +52,6 @@ builder.Services.AddIdentity<User, Role>(opt =>
 	.AddDefaultTokenProviders();
 
 builder.Services.AddScoped<IUnitofWork, UnitofWork>();
-builder.Services.AddScoped<IRepository<User>, Repository<User>>();
-builder.Services.AddScoped<IRepository<Role>, Repository<Role>>();
 
 builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
 builder.Services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
