@@ -1,5 +1,3 @@
-using Presistence.Repository.Interface;
-
 namespace Presistence.Repository.Interface;
 
 public interface IUnitofWork
