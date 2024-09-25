@@ -1,10 +1,11 @@
+using Application.Features.Interface;
 using AutoMapper;
 using Domain.Entites;
 using Presistence.Repository.Interface;
 
 namespace Application.Features.UserFeatures.CreateUser;
 
-public class CreateUserHandler
+public class CreateUserHandler : IFeatureHandler<CreateUserResponse, CreateUserRequest>
 {
 	private readonly IUnitofWork _unitofWork;
 	private readonly IMapper _mapper;
@@ -15,7 +16,7 @@ public class CreateUserHandler
 		_mapper = mapper;
 	}
 	
-	public async Task<CreateUserResponse> Handle(CreateUserRequest request)
+	public async Task<CreateUserResponse> HandleAsync(CreateUserRequest request)
 	{
 		
 		var validator = new CreateUserValidator();
