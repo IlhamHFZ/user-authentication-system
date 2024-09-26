@@ -4,12 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Org.BouncyCastle.Asn1.X509;
 
 namespace Presistence.Context;
-/*
-	TODO:
-	- ganti Class1 jadi nama class untuk database
-	- install nuget yang diperluin untuk code fisrt EF
-	- pake fluent api
-*/
+
 public class DataContext : IdentityDbContext<User, Role, Guid>
 {
 	public DataContext(DbContextOptions<DataContext> options): base(options)
