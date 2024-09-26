@@ -1,3 +1,4 @@
+using Application.Features.Interface;
 using AutoMapper;
 using Domain.Entites;
 using Microsoft.AspNetCore.Identity;
@@ -8,7 +9,7 @@ namespace Application.Features.UserFeatures.UpdateUser;
 TODO:
 	-implement logger
 */
-public class UpdateUserHandler
+public class UpdateUserHandler : IFeatureHandler<UpdateUserResponse, UpdateUserRequest>
 {
 	private readonly IUnitofWork _unitofWork;
 	private readonly IMapper _mapper;
@@ -19,7 +20,7 @@ public class UpdateUserHandler
 		_mapper = mapper;
 	}
 	//TODO: implement error handling 
-	public async Task<UpdateUserResponse> Handler(UpdateUserRequest request)
+	public async Task<UpdateUserResponse> HandleAsync(UpdateUserRequest request)
 	{
 		var user = await _unitofWork.Repository<IdentityUserRole<Guid>>().GetAsync(request.UserId);
 		if(user is null)
