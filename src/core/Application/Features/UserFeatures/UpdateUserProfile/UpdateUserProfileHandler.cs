@@ -1,10 +1,11 @@
+using Application.Features.Interface;
 using AutoMapper;
 using Domain.Entites;
 using Presistence.Repository.Interface;
 
 namespace Application.Features.UserFeatures.UpdateUserProfile;
 
-public class UpdateUserProfileHandler
+public class UpdateUserProfileHandler : IFeatureHandler<UpdateUserProfileResponse, UpdateUserProfileRequest>
 {
 	private readonly IUnitofWork _unitofWork;
 	private readonly IMapper _mapper;
@@ -15,7 +16,7 @@ public class UpdateUserProfileHandler
 		_mapper = mapper;
 	}
 	
-	public async Task<UpdateUserProfileResponse> Handle(UpdateUserProfileRequest request)
+	public async Task<UpdateUserProfileResponse> HandleAsync(UpdateUserProfileRequest request)
 	{
 		var validator = new UpdateUserProfileValidator();
 		var result = validator.Validate(request);
