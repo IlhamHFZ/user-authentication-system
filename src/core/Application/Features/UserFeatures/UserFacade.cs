@@ -2,6 +2,7 @@ using Application.Features.UserFeatures.CreateUser;
 using Application.Features.UserFeatures.DeleteUser;
 using Application.Features.UserFeatures.GetAllUser;
 using Application.Features.UserFeatures.GetByIdUser;
+using Application.Features.UserFeatures.Interface;
 using Application.Features.UserFeatures.UpdateUser;
 using Application.Features.UserFeatures.UpdateUserProfile;
 
@@ -9,20 +10,20 @@ namespace Application.Features.UserFeatures;
 
 public class UserFacade : IUserFacade
 {
-	private readonly CreateUserHandler _createUserHandler;
-	private readonly DeleteUserHandler _deleteUserHandler;
-	private readonly GetAllUserHandler _getAllUserHandler;
-	private readonly GetByIdUserHandler _getByIdUserHandler;
-	private readonly UpdateUserHandler _updateUserHandler;
-	private readonly UpdateUserProfileHandler _updateUserProfileHandler;
+	private readonly ICreateUserHandler _createUserHandler;
+	private readonly IDeleteUserHandler _deleteUserHandler;
+	private readonly IGetAllUserHandler _getAllUserHandler;
+	private readonly IGetByIdUserHandler _getByIdUserHandler;
+	private readonly IUpdateUserHandler _updateUserHandler;
+	private readonly IUpdateUserProfileHandler _updateUserProfileHandler;
 
 	public UserFacade(
-		CreateUserHandler createUserHandler, 
-		DeleteUserHandler deleteUserHandler, 
-		GetAllUserHandler getAllUserHandler, 
-		GetByIdUserHandler getByIdUserHandler, 
-		UpdateUserHandler updateUserHandler, 
-		UpdateUserProfileHandler updateUserProfileHandler)
+		ICreateUserHandler createUserHandler, 
+		IDeleteUserHandler deleteUserHandler, 
+		IGetAllUserHandler getAllUserHandler, 
+		IGetByIdUserHandler getByIdUserHandler, 
+		IUpdateUserHandler updateUserHandler, 
+		IUpdateUserProfileHandler updateUserProfileHandler)
 	{
 		_createUserHandler = createUserHandler;
 		_deleteUserHandler = deleteUserHandler;
@@ -37,27 +38,27 @@ public class UserFacade : IUserFacade
 		return await _createUserHandler.HandleAsync(request);
 	}
 
-	public async Task<DeleteUserResponse> DeleteUserAsync(DeleteUserRequest request)
+	public async Task<DeleteUserResponse?> DeleteUserAsync(DeleteUserRequest request)
 	{
 		return await _deleteUserHandler.HandleAsync(request);
 	}
 
-	public async Task<IEnumerable<GetAllUserResponse>> GetAllUserAsync(GetAllUserRequest request)
+	public async Task<IEnumerable<GetAllUserResponse>?> GetAllUserAsync()
 	{
-		return await _getAllUserHandler.HandleAsync(request);
+		return await _getAllUserHandler.HandleAsync();
 	}
 
-	public async Task<GetByIdUserResponse> GetByIdUserAsync(GetByIdUserRequest request)
+	public async Task<GetByIdUserResponse?> GetByIdUserAsync(GetByIdUserRequest request)
 	{
 		return await _getByIdUserHandler.HandleAsync(request);
 	}
 
-	public async Task<UpdateUserResponse> UpdateUserAsync(UpdateUserRequest request)
+	public async Task<UpdateUserResponse?> UpdateUserAsync(UpdateUserRequest request)
 	{
 		return await _updateUserHandler.HandleAsync(request);
 	}
 
-	public async Task<UpdateUserProfileResponse> UpdateUserProfileAsync(UpdateUserProfileRequest request)
+	public async Task<UpdateUserProfileResponse?> UpdateUserProfileAsync(UpdateUserProfileRequest request)
 	{
 		return await _updateUserProfileHandler.HandleAsync(request);
 	}

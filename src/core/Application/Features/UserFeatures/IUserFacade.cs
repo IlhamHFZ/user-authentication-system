@@ -10,9 +10,9 @@ namespace Application.Features.UserFeatures;
 public interface IUserFacade
 {
 	Task<CreateUserResponse> CreateUserAsync(CreateUserRequest request);
-	Task<DeleteUserResponse> DeleteUserAsync(DeleteUserRequest request);
-	Task<IEnumerable<GetAllUserResponse>> GetAllUserAsync(GetAllUserRequest request);
-	Task<GetByIdUserResponse> GetByIdUserAsync(GetByIdUserRequest request);
-	Task<UpdateUserResponse> UpdateUserAsync(UpdateUserRequest request);
-	Task<UpdateUserProfileResponse> UpdateUserProfileAsync(UpdateUserProfileRequest request); 
+	Task<DeleteUserResponse?> DeleteUserAsync(DeleteUserRequest request);
+	Task<IEnumerable<GetAllUserResponse>?> GetAllUserAsync();
+	Task<GetByIdUserResponse?> GetByIdUserAsync(GetByIdUserRequest request);
+	Task<UpdateUserResponse?> UpdateUserAsync(UpdateUserRequest request);
+	Task<UpdateUserProfileResponse?> UpdateUserProfileAsync(UpdateUserProfileRequest request); 
 }
