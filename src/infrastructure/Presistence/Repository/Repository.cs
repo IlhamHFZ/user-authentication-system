@@ -25,12 +25,12 @@ public class Repository<T> : IRepository<T> where T : class
 		_set.Remove(entity);
 	}
 
-	public async Task<IEnumerable<T>> GetAllAsync()
+	public async Task<IEnumerable<T>?> GetAllAsync()
 	{
 		return await _set.ToListAsync();
 	}
 
-	public async Task<T> GetAsync(Guid id)
+	public async Task<T?> GetAsync(Guid id)
 	{
 		return await _set.FindAsync(id);
 	}
