@@ -1,27 +1,40 @@
-using Application.Features.Interface;
+using Application.Features.UserFeatures.Interface;
 using AutoMapper;
-using Domain.Entites;
+using FluentValidation;
 using Microsoft.AspNetCore.Identity;
 using Presistence.Repository.Interface;
 
 namespace Application.Features.UserFeatures.UpdateUser;
+
 /*
 TODO:
 	-implement logger
 */
-public class UpdateUserHandler : IFeatureHandler<UpdateUserResponse, UpdateUserRequest>
+public class UpdateUserHandler : IUpdateUserHandler
 {
 	private readonly IUnitofWork _unitofWork;
 	private readonly IMapper _mapper;
-	
-	public UpdateUserHandler(IUnitofWork unitofWork, IMapper mapper)
+	private readonly IValidator<UpdateUserRequest> _validator;
+
+	public UpdateUserHandler(
+		IUnitofWork unitofWork, 
+		IMapper mapper, 
+		IValidator<UpdateUserRequest> validator)
 	{
 		_unitofWork = unitofWork;
 		_mapper = mapper;
+		_validator = validator;
 	}
+	
 	//TODO: implement error handling 
-	public async Task<UpdateUserResponse> HandleAsync(UpdateUserRequest request)
+	public async Task<UpdateUserResponse?> HandleAsync(UpdateUserRequest request)
 	{
+		var result = _validator.Validate(request);
+		if(!result.IsValid)
+		{
+			_validator.ValidateAndThrow(request);
+		}
+		
 		var user = await _unitofWork.Repository<IdentityUserRole<Guid>>().GetAsync(request.UserId);
 		if(user is null)
 		{
