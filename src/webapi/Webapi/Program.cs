@@ -9,6 +9,14 @@ using Presistence.Repository;
 using Presistence.Repository.Interface;
 using System.Reflection;
 using FluentValidation;
+using Application.Features.UserFeatures;
+using Application.Features.UserFeatures.Interface;
+using Application.Features.UserFeatures.GetAllUser;
+using Application.Features.UserFeatures.CreateUser;
+using Application.Features.UserFeatures.DeleteUser;
+using Application.Features.UserFeatures.GetByIdUser;
+using Application.Features.UserFeatures.UpdateUser;
+using Application.Features.UserFeatures.UpdateUserProfile;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -53,8 +61,17 @@ builder.Services.AddIdentity<User, Role>(opt =>
 
 builder.Services.AddScoped<IUnitofWork, UnitofWork>();
 
-builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
-builder.Services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
+builder.Services.AddScoped<IUserFacade, UserFacade>();
+
+builder.Services.AddScoped<ICreateUserHandler, CreateUserHandler>();
+builder.Services.AddScoped<IDeleteUserHandler, DeleteUserHandler>();
+builder.Services.AddScoped<IGetAllUserHandler, GetAllUserHandler>();
+builder.Services.AddScoped<IGetByIdUserHandler, GetByIdUserHandler>();
+builder.Services.AddScoped<IUpdateUserHandler, UpdateUserHandler>();
+builder.Services.AddScoped<IUpdateUserProfileHandler, UpdateUserProfileHandler>();
+
+builder.Services.AddAutoMapper(Assembly.Load("Application"));
+builder.Services.AddValidatorsFromAssembly(Assembly.Load("Application"));
 
 var app = builder.Build();
 
