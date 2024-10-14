@@ -1,31 +1,41 @@
-using Application.Features.Interface;
+using Application.Features.UserFeatures.Interface;
 using AutoMapper;
 using Domain.Entites;
+using FluentValidation;
 using Presistence.Repository.Interface;
 
 namespace Application.Features.UserFeatures.UpdateUserProfile;
 
-public class UpdateUserProfileHandler : IFeatureHandler<UpdateUserProfileResponse, UpdateUserProfileRequest>
+public class UpdateUserProfileHandler : IUpdateUserProfileHandler
 {
 	private readonly IUnitofWork _unitofWork;
 	private readonly IMapper _mapper;
-	
-	public UpdateUserProfileHandler(IUnitofWork unitofWork, IMapper mapper)
+	private readonly IValidator<UpdateUserProfileRequest> _validator;
+
+	public UpdateUserProfileHandler(
+		IUnitofWork unitofWork, 
+		IMapper mapper, 
+		IValidator<UpdateUserProfileRequest> validator)
 	{
 		_unitofWork = unitofWork;
 		_mapper = mapper;
+		_validator = validator;
 	}
-	
-	public async Task<UpdateUserProfileResponse> HandleAsync(UpdateUserProfileRequest request)
+
+	public async Task<UpdateUserProfileResponse?> HandleAsync(UpdateUserProfileRequest request)
 	{
-		var validator = new UpdateUserProfileValidator();
-		var result = validator.Validate(request);
+		var result = _validator.Validate(request);
 		if(!result.IsValid)
+		{
+			_validator.ValidateAndThrow(request);
+		}
+		
+		var user = await _unitofWork.Repository<User>().GetAsync(request.Id);
+		if(user is null)
 		{
 			return null;
 		}
 		
-		var user = await _unitofWork.Repository<User>().GetAsync(request.Id);
 		user.UserName = request.UserName ?? user.UserName;
 		user.DisplayName = request.DisplayName ?? user.DisplayName;
 		
