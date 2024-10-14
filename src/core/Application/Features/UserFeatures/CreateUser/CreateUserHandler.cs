@@ -1,11 +1,11 @@
-using Application.Features.Interface;
+using Application.Features.UserFeatures.Interface;
 using AutoMapper;
 using Domain.Entites;
 using Presistence.Repository.Interface;
 
 namespace Application.Features.UserFeatures.CreateUser;
 
-public class CreateUserHandler : IFeatureHandler<CreateUserResponse, CreateUserRequest>
+public class CreateUserHandler : ICreateUserHandler
 {
 	private readonly IUnitofWork _unitofWork;
 	private readonly IMapper _mapper;
