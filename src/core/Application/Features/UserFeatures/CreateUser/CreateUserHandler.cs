@@ -25,10 +25,6 @@ public class CreateUserHandler : ICreateUserHandler
 	public async Task<CreateUserResponse> HandleAsync(CreateUserRequest request)
 	{
 		var result = _validator.Validate(request);
-		/*TODO:
-			-implement best practice expection handler to give a feedback to user
-			-implement loger
-		*/
 		if(!result.IsValid)
 		{
 			_validator.ValidateAndThrow(request);

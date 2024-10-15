@@ -6,10 +6,6 @@ using Presistence.Repository.Interface;
 
 namespace Application.Features.UserFeatures.UpdateUser;
 
-/*
-TODO:
-	-implement logger
-*/
 public class UpdateUserHandler : IUpdateUserHandler
 {
 	private readonly IUnitofWork _unitofWork;
@@ -26,7 +22,6 @@ public class UpdateUserHandler : IUpdateUserHandler
 		_validator = validator;
 	}
 	
-	//TODO: implement error handling 
 	public async Task<UpdateUserResponse?> HandleAsync(UpdateUserRequest request)
 	{
 		var result = _validator.Validate(request);
