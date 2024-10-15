@@ -9,7 +9,8 @@ public class UpdateUserProfileValidator : AbstractValidator<UpdateUserProfileReq
 		RuleFor(user => user.UserName)
 			.MinimumLength(3)
 			.MaximumLength(20)
-			.Matches(@"^[a-zA-Z]+$");
+			.Matches(@"^[a-zA-Z ]+$")
+			.WithMessage("username can not contain number and special symbol");
 		RuleFor(user => user.DisplayName)
 			.MinimumLength(3)
 			.MaximumLength(10);
