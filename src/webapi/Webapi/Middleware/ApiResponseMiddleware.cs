@@ -1,6 +1,4 @@
 using System.Text.Json;
-using Org.BouncyCastle.Asn1.Mozilla;
-using ZstdSharp.Unsafe;
 
 namespace Webapi.Middleware;
 
@@ -15,7 +13,7 @@ public class ApiResponseMiddleware
 	
 	public async Task InvokeAsync(HttpContext context)
 	{
-		Stream originialBodyResponse = context.Response.Body;
+		Stream originalBodyResponse = context.Response.Body;
 		
 		using(MemoryStream newBodyResponse = new MemoryStream())
 		{
@@ -43,8 +41,8 @@ public class ApiResponseMiddleware
 			}
 			
 			newBodyResponse.Seek(0, SeekOrigin.Begin);
-			await newBodyResponse.CopyToAsync(originialBodyResponse);
-			context.Response.Body = originialBodyResponse;
+			await newBodyResponse.CopyToAsync(originalBodyResponse);
+			context.Response.Body = originalBodyResponse;
 		}
 	}
 }
