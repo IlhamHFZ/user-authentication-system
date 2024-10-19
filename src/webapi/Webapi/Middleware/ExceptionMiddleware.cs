@@ -1,5 +1,7 @@
 using System.Net;
 using FluentValidation;
+using Mysqlx;
+using Webapi.Models.ErrorResponse;
 
 namespace Webapi.Middleware;
 
@@ -24,6 +26,10 @@ public class ExceptionMiddleware
 		{
 			await HandleValidationException(context, ex, originalBodyResponse);
 		}
+		catch(Exception)
+		{
+			await HandleGlobalException(context);
+		}
 	}
 	
 	private async Task HandleValidationException(HttpContext context, ValidationException ex, Stream originalBodyResponse)
@@ -33,12 +39,16 @@ public class ExceptionMiddleware
 			context.Response.Body = memoryStream;
 			context.Response.ContentType = "application/json; charset=utf-8";
 			context.Response.StatusCode = (int) HttpStatusCode.BadRequest;
-			
-			var response = new
+						
+			var response = new ValidationErrorResponse()
 			{
 				Status = context.Response.StatusCode,
-				Message = "Validation failed",
-				Errors = ex.Errors.Select(e => new {Field = e.PropertyName, Error = e.ErrorMessage})
+				Message = "validation failed",
+				Errors = ex.Errors.GroupBy(e => e.PropertyName).Select(e => new ValidationErrorDetail()
+				{
+					Field = e.Key,
+					Message = e.Select(m => m.ErrorMessage).ToList()
+				}).ToList()
 			};
 			
 			context.Response.Body.Seek(0, SeekOrigin.Begin);
