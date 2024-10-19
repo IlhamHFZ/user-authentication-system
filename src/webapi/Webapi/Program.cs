@@ -17,7 +17,6 @@ using Application.Features.UserFeatures.DeleteUser;
 using Application.Features.UserFeatures.GetByIdUser;
 using Application.Features.UserFeatures.UpdateUser;
 using Application.Features.UserFeatures.UpdateUserProfile;
-using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Webapi.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
