@@ -11,6 +11,7 @@ namespace Webapi.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
+[Produces("application/json")]
 public class UserController : ControllerBase
 {
 	private readonly IUserFacade _userFacade;
@@ -26,7 +27,7 @@ public class UserController : ControllerBase
 		var users = await _userFacade.GetAllUserAsync();
 		if(users is null)
 		{
-			return BadRequest();
+			return NotFound("list of user not found");
 		}
 		return Ok(users);
 	}
@@ -37,7 +38,7 @@ public class UserController : ControllerBase
 		var user = await _userFacade.GetByIdUserAsync(new GetByIdUserRequest(){Id = id});
 		if(user is null)
 		{
-			return BadRequest();
+			return NotFound("user not found");
 		}
 		
 		return Ok(user);
@@ -46,9 +47,9 @@ public class UserController : ControllerBase
 	[HttpPost]
 	public async Task<ActionResult<CreateUserResponse>> PostUser([FromBody] CreateUserRequest request)
 	{
-		var userRequest = await _userFacade.CreateUserAsync(request);
+		var user = await _userFacade.CreateUserAsync(request);
 		
-		return Ok();
+		return Ok(user);
 	}
 	
 	[HttpPatch]
@@ -57,10 +58,10 @@ public class UserController : ControllerBase
 		var user = await _userFacade.UpdateUserAsync(request);
 		if(user is null)
 		{
-			return BadRequest();
+			return NotFound("user or role not found");
 		}
 		
-		return Ok();
+		return Ok(user);
 	}
 	
 	[HttpPatch("profile")]
@@ -69,10 +70,10 @@ public class UserController : ControllerBase
 		var user = await _userFacade.UpdateUserProfileAsync(request);
 		if(user is null)
 		{
-			return BadRequest();
+			return NotFound("user not found");
 		}
 		
-		return Ok();
+		return Ok(user);
 	}
 	
 	[HttpDelete("{id}")]
@@ -81,9 +82,9 @@ public class UserController : ControllerBase
 		var user = await _userFacade.DeleteUserAsync(new DeleteUserRequest(){Id = id});
 		if(user is null)
 		{
-			return BadRequest();
+			return NotFound("user not found");
 		}
 		
-		return Ok();
+		return Ok(user);
 	}
 }
