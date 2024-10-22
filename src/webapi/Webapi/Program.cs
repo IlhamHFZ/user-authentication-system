@@ -18,6 +18,7 @@ using Application.Features.UserFeatures.GetByIdUser;
 using Application.Features.UserFeatures.UpdateUser;
 using Application.Features.UserFeatures.UpdateUserProfile;
 using Webapi.Middleware;
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -27,7 +28,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddDbContext<DataContext>(opt => 
+builder.Services.AddDbContext<DataContext>(opt =>
 {
 	opt.UseMySQL(builder.Configuration.GetConnectionString("Database"));
 });
@@ -48,17 +49,25 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 		};
 	});
 
-builder.Services.AddIdentity<User, Role>(opt =>
+builder.Services.AddIdentity<User, Role>(options =>
 {
-	opt.Password.RequireDigit = true;
-	opt.Password.RequireLowercase = true;
-	opt.Password.RequireUppercase = true;
-	opt.Password.RequiredUniqueChars = 1;
-	opt.User.RequireUniqueEmail = true;
-	
-})	
+	options.Password.RequireDigit = true;
+	options.Password.RequireLowercase = true;
+	options.Password.RequireUppercase = true;
+	options.Password.RequiredUniqueChars = 1;
+	options.User.RequireUniqueEmail = true;
+})
 	.AddEntityFrameworkStores<DataContext>()
 	.AddDefaultTokenProviders();
+
+builder.Services.AddLogging(logging => 
+{
+	logging.ClearProviders();
+});
+builder.Services.AddSerilog(config =>
+{
+	config.ReadFrom.Configuration(builder.Configuration);
+});
 
 builder.Services.AddScoped<IUnitofWork, UnitofWork>();
 
@@ -83,6 +92,23 @@ if (app.Environment.IsDevelopment())
 	app.UseSwaggerUI();
 }
 
+app.UseSerilogRequestLogging(options =>
+{
+	options.GetLevel = (context, elapsed, ex) => 
+	{
+		if(context.Response.StatusCode >= 400)
+		{
+			return Serilog.Events.LogEventLevel.Warning;
+		}
+		
+		if(context.Response.StatusCode >= 500)
+		{
+			return Serilog.Events.LogEventLevel.Error;
+		}
+		
+		return Serilog.Events.LogEventLevel.Information;
+	};
+});
 app.UseMiddleware<ExceptionMiddleware>();
 
 app.UseHttpsRedirection();
