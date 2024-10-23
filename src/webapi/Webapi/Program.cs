@@ -115,8 +115,6 @@ app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.UseMiddleware<ApiResponseMiddleware>();
-
 app.MapControllers();
 
 app.Run();
