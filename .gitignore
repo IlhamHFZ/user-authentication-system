@@ -316,4 +316,6 @@ $RECYCLE.BIN/
 # Windows shortcuts
 *.lnk
 
+src/webapi/Webapi/Logs/*.txt
+
 # End of https://www.toptal.com/developers/gitignore/api/windows,visualstudiocode,aspnetcore
