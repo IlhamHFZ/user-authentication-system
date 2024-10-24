@@ -19,6 +19,12 @@ using Application.Features.UserFeatures.UpdateUser;
 using Application.Features.UserFeatures.UpdateUserProfile;
 using Webapi.Middleware;
 using Serilog;
+using Application.Features.RoleFeatures;
+using Application.Features.RoleFeatures.Interface;
+using Application.Features.RoleFeatures.CreateRole;
+using Application.Features.RoleFeatures.GetAllRole;
+using Application.Features.RoleFeatures.GetByIdRole;
+using Application.Features.RoleFeatures.DeleteRole;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -72,13 +78,18 @@ builder.Services.AddSerilog(config =>
 builder.Services.AddScoped<IUnitofWork, UnitofWork>();
 
 builder.Services.AddScoped<IUserFacade, UserFacade>();
-
 builder.Services.AddScoped<ICreateUserHandler, CreateUserHandler>();
 builder.Services.AddScoped<IDeleteUserHandler, DeleteUserHandler>();
 builder.Services.AddScoped<IGetAllUserHandler, GetAllUserHandler>();
 builder.Services.AddScoped<IGetByIdUserHandler, GetByIdUserHandler>();
 builder.Services.AddScoped<IUpdateUserHandler, UpdateUserHandler>();
 builder.Services.AddScoped<IUpdateUserProfileHandler, UpdateUserProfileHandler>();
+
+builder.Services.AddScoped<IRoleFacade, RoleFacade>();
+builder.Services.AddScoped<ICreateRoleHandler, CreateRoleHandler>();
+builder.Services.AddScoped<IDeleteRoleHandler, DeleteRoleHandler>();
+builder.Services.AddScoped<IGetAllRoleHandler, GetAllRoleHandler>();
+builder.Services.AddScoped<IGetByIdRoleHandler, GetByIdRoleHandler>();
 
 builder.Services.AddAutoMapper(Assembly.Load("Application"));
 builder.Services.AddValidatorsFromAssembly(Assembly.Load("Application"));
