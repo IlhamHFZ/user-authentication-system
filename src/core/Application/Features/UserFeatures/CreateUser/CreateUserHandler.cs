@@ -39,8 +39,8 @@ public class CreateUserHandler : ICreateUserHandler
 		
 		var user = _mapper.Map<User>(request);
 		
-		_logger.LogInformation($"Saving new user to database for user with email {request.Email}");
 		await _unitofWork.Repository<User>().CreateAsync(user);
+		_logger.LogInformation($"Saving new user to database for user with email {request.Email}");
 		
 		await _unitofWork.SaveChangeAsync();
 		_logger.LogInformation($"User successfully saved in database for user with email {request.Email}");

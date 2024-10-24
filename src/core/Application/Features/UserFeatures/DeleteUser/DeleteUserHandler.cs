@@ -43,8 +43,8 @@ public class DeleteUserHandler : IDeleteUserHandler
 			return null;
 		}
 		
-		_logger.LogInformation($"Delete user from database for user with id {request.Id}");
 		_unitofWork.Repository<User>().Delete(user);
+		_logger.LogInformation($"Delete user from database for user with id {request.Id}");
 		
 		await _unitofWork.SaveChangeAsync();
 		_logger.LogInformation($"User successfully deleted from database for user with id {request.Id}");
