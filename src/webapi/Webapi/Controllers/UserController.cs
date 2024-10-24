@@ -87,7 +87,6 @@ public class UserController : ControllerBase
 
 	[HttpPost]
 	[ProducesResponseType(StatusCodes.Status200OK)]
-	[ProducesResponseType<ApiResponse<object>>(StatusCodes.Status404NotFound)]
 	[ProducesResponseType<ValidationErrorResponse>(StatusCodes.Status400BadRequest)]
 	public async Task<ActionResult<ApiResponse<CreateUserResponse>>> PostUser([FromBody] CreateUserRequest request)
 	{
