@@ -22,10 +22,16 @@ public class GetAllUserHandler : IGetAllUserHandler
 		_logger = logger;
 	}
 
-	public async Task<IEnumerable<GetAllUserResponse>?> HandleAsync()
+	public async Task<IEnumerable<GetAllUserResponse>?> HandleAsync(GetAllUserRequest request)
 	{
 		_logger.LogInformation($"Starting to process GetAllUserHandler request");
-		var users = await _unitofWork.Repository<User>().GetAllAsync();
+		var users = await _unitofWork.Repository<User>().GetAllAsync(
+			request.FilterOn,
+			request.FilterQuery,
+			request.SortBy,
+			request.IsAscending,
+			request.PageSize,
+			request.PageCurrent);
 		if(users is null)
 		{
 			_logger.LogWarning($"Users not found");
