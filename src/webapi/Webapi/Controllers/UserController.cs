@@ -27,7 +27,14 @@ public class UserController : ControllerBase
 	[HttpGet]
 	[ProducesResponseType(StatusCodes.Status200OK)]
 	[ProducesResponseType<ApiResponse<object>>(StatusCodes.Status404NotFound)]
-	public async Task<ActionResult<ApiResponse<IEnumerable<GetAllUserResponse>>>> GetAllUser()
+	public async Task<ActionResult<ApiResponse<IEnumerable<GetAllUserResponse>>>> GetAllUser(
+		[FromQuery] string? filterOn,
+		[FromQuery] string? filterQuery,
+		[FromQuery] string sortBy = "username",
+		[FromQuery] bool isAscending = true,
+		[FromQuery] int pageSize = 10,
+		[FromQuery] int pageCurrent = 1
+	)
 	{
 		_logger.LogInformation("Starting to process GetAllUser request");
 		var users = await _userFacade.GetAllUserAsync();
