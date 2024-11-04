@@ -6,6 +6,7 @@ public record GetAllUserResponse
 	public string UserName { get; set; } = null!;
 	public string DisplayName { get; set; } = null!;
 	public string Email { get; set; } = null!;
+	public string NormalizedEmail {get; set;} = null!;
 	public bool EmailConfirmed { get; set; }
 	public string? PhoneNumber {get; set; }
 	public bool PhoneConfirmed { get; set; }

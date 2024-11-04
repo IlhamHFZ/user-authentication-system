@@ -43,9 +43,9 @@ public class UserFacade : IUserFacade
 		return await _deleteUserHandler.HandleAsync(request);
 	}
 
-	public async Task<IEnumerable<GetAllUserResponse>?> GetAllUserAsync()
+	public async Task<IEnumerable<GetAllUserResponse>?> GetAllUserAsync(GetAllUserRequest request)
 	{
-		return await _getAllUserHandler.HandleAsync();
+		return await _getAllUserHandler.HandleAsync(request);
 	}
 
 	public async Task<GetByIdUserResponse?> GetByIdUserAsync(GetByIdUserRequest request)

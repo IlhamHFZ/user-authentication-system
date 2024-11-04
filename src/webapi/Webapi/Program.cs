@@ -61,10 +61,22 @@ builder.Services.AddIdentity<User, Role>(options =>
 	options.Password.RequireLowercase = true;
 	options.Password.RequireUppercase = true;
 	options.Password.RequiredUniqueChars = 1;
+	
 	options.User.RequireUniqueEmail = true;
+	
+	options.Lockout.MaxFailedAccessAttempts = 5;
+	options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(15);
+	options.Lockout.AllowedForNewUsers = true;
+	
+	options.SignIn.RequireConfirmedEmail = true;
 })
 	.AddEntityFrameworkStores<DataContext>()
 	.AddDefaultTokenProviders();
+	
+builder.Services.Configure<SecurityStampValidatorOptions>(options =>
+{
+	options.ValidationInterval = TimeSpan.FromMinutes(2);
+});
 
 builder.Services.AddLogging(logging => 
 {

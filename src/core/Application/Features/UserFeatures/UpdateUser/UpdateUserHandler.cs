@@ -55,7 +55,7 @@ public class UpdateUserHandler : IUpdateUserHandler
 		await _unitofWork.SaveChangeAsync();
 		_logger.LogInformation($"User successfully updated in database for user with id {request.UserId}");
 		
-		var userDto = _mapper.Map<UpdateUserResponse>(user);
-		return _mapper.Map(role, userDto);
+		var response = _mapper.Map<UpdateUserResponse>(user);
+		return _mapper.Map(role, response);
 	}
 }

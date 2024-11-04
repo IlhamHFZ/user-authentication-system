@@ -1,3 +1,4 @@
+using System.Linq.Expressions;
 using Application.Features.UserFeatures.Interface;
 using AutoMapper;
 using Domain.Entites;
@@ -25,13 +26,9 @@ public class GetAllUserHandler : IGetAllUserHandler
 	public async Task<IEnumerable<GetAllUserResponse>?> HandleAsync(GetAllUserRequest request)
 	{
 		_logger.LogInformation($"Starting to process GetAllUserHandler request");
-		var users = await _unitofWork.Repository<User>().GetAllAsync(
-			request.FilterOn,
-			request.FilterQuery,
-			request.SortBy,
-			request.IsAscending,
-			request.PageSize,
-			request.PageCurrent);
+		var users = await _unitofWork.Repository<User>().GetAllAsync();
+		
+		// users = users.Where(u => )
 		if(users is null)
 		{
 			_logger.LogWarning($"Users not found");

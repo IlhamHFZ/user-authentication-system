@@ -36,8 +36,18 @@ public class UserController : ControllerBase
 		[FromQuery] int pageCurrent = 1
 	)
 	{
+		
 		_logger.LogInformation("Starting to process GetAllUser request");
-		var users = await _userFacade.GetAllUserAsync();
+		var request = new GetAllUserRequest()
+		{
+			FilterOn = filterOn,
+			FilterQuery = filterQuery,
+			SortBy = sortBy,
+			IsAscending = isAscending,
+			PageSize = pageSize,
+			PageCurrent = pageCurrent
+		};
+		var users = await _userFacade.GetAllUserAsync(request);
 
 		ApiResponse<IEnumerable<GetAllUserResponse>> response = new ApiResponse<IEnumerable<GetAllUserResponse>>()
 		{
