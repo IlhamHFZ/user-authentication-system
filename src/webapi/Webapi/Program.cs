@@ -74,6 +74,7 @@ builder.Services.AddIdentity<User, Role>(options =>
 })
 	.AddEntityFrameworkStores<DataContext>()
 	.AddPasswordValidator<CustomPasswordValidator>()
+	.AddUserValidator<CustomUserValidator>()
 	.AddDefaultTokenProviders();
 	
 builder.Services.Configure<SecurityStampValidatorOptions>(options =>
