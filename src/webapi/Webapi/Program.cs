@@ -25,6 +25,7 @@ using Application.Features.RoleFeatures.CreateRole;
 using Application.Features.RoleFeatures.GetAllRole;
 using Application.Features.RoleFeatures.GetByIdRole;
 using Application.Features.RoleFeatures.DeleteRole;
+using Application.Commons;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -58,6 +59,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 builder.Services.AddIdentity<User, Role>(options =>
 {
 	options.Password.RequireDigit = true;
+	options.Password.RequiredLength = 8;
 	options.Password.RequireLowercase = true;
 	options.Password.RequireUppercase = true;
 	options.Password.RequiredUniqueChars = 1;
@@ -71,6 +73,7 @@ builder.Services.AddIdentity<User, Role>(options =>
 	options.SignIn.RequireConfirmedEmail = true;
 })
 	.AddEntityFrameworkStores<DataContext>()
+	.AddPasswordValidator<CustomPasswordValidator>()
 	.AddDefaultTokenProviders();
 	
 builder.Services.Configure<SecurityStampValidatorOptions>(options =>
@@ -103,7 +106,7 @@ builder.Services.AddScoped<IDeleteRoleHandler, DeleteRoleHandler>();
 builder.Services.AddScoped<IGetAllRoleHandler, GetAllRoleHandler>();
 builder.Services.AddScoped<IGetByIdRoleHandler, GetByIdRoleHandler>();
 
-builder.Services.AddAutoMapper(Assembly.Load("Application"));
+builder.Services.AddAutoMapper(Assembly.Load("Application"), Assembly.Load("Webapi"));
 builder.Services.AddValidatorsFromAssembly(Assembly.Load("Application"));
 
 var app = builder.Build();

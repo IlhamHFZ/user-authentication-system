@@ -12,6 +12,6 @@ public class CreateUserMapper : Profile
 			.ForMember(dest => dest.PasswordHash, opt => opt.MapFrom(src => src.Password));
 		CreateMap<User, CreateUserResponse>();
 		CreateMap<IdentityResult, CreateUserResponse>()
-			.ForMember(dest => dest.Errors, opt => opt.Condition(src => src.Errors.Any()));
+			.ForMember(dest => dest.IsSuccess, opt => opt.MapFrom(src => src.Succeeded));
 	}
 }

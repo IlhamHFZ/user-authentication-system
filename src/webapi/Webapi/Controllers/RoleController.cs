@@ -4,8 +4,8 @@ using Application.Features.RoleFeatures.DeleteRole;
 using Application.Features.RoleFeatures.GetAllRole;
 using Application.Features.RoleFeatures.GetByIdRole;
 using Microsoft.AspNetCore.Mvc;
-using Webapi.Models;
-using Webapi.Models.ErrorResponse;
+using Webapi.Models.Errors.ValidationException;
+using Webapi.Models.Responses;
 
 namespace Webapi.Controllers;
 

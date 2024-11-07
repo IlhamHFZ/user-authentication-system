@@ -1,6 +1,6 @@
 using System.Net;
 using FluentValidation;
-using Webapi.Models.ErrorResponse;
+using Webapi.Models.Errors.ValidationException;
 
 namespace Webapi.Middleware;
 

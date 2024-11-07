@@ -5,9 +5,11 @@ using Application.Features.UserFeatures.GetAllUser;
 using Application.Features.UserFeatures.GetByIdUser;
 using Application.Features.UserFeatures.UpdateUser;
 using Application.Features.UserFeatures.UpdateUserProfile;
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-using Webapi.Models;
-using Webapi.Models.ErrorResponse;
+using Webapi.Models.Errors.ValidationException;
+using Webapi.Models.Responses;
+using Webapi.Models.Responses.User;
 
 namespace Webapi.Controllers;
 
@@ -18,10 +20,12 @@ public class UserController : ControllerBase
 {
 	private readonly IUserFacade _userFacade;
 	private readonly ILogger<UserController> _logger;
-	public UserController(IUserFacade userFacade, ILogger<UserController> logger)
+	private readonly IMapper _mapper;
+	public UserController(IUserFacade userFacade, ILogger<UserController> logger, IMapper mapper)
 	{
 		_userFacade = userFacade;
 		_logger = logger;
+		_mapper = mapper;
 	}
 
 	[HttpGet]
@@ -103,22 +107,37 @@ public class UserController : ControllerBase
 	}
 
 	[HttpPost]
-	[ProducesResponseType(StatusCodes.Status200OK)]
+	[ProducesResponseType<ApiResponse<CreateUserSuccessResponse>>(StatusCodes.Status200OK)]
+	[ProducesResponseType<ApiResponse<CreateUserFailedResponse>>(StatusCodes.Status400BadRequest)]
 	[ProducesResponseType<ValidationErrorResponse>(StatusCodes.Status400BadRequest)]
-	public async Task<ActionResult<ApiResponse<CreateUserResponse>>> PostUser([FromBody] CreateUserRequest request)
+	public async Task<IActionResult> PostUser([FromBody] CreateUserRequest request)
 	{
 		_logger.LogInformation($"Starting to process PostUser request for user email {request.Email}");
 		var user = await _userFacade.CreateUserAsync(request);
 
-		ApiResponse<CreateUserResponse> response = new ApiResponse<CreateUserResponse>()
+		if(!user.IsSuccess)
+		{
+			ApiResponse<CreateUserFailedResponse> badRequestResponse = new ApiResponse<CreateUserFailedResponse>()
+			{
+				Status = StatusCodes.Status400BadRequest,
+				Message = "failed created new user",
+				Data = _mapper.Map<CreateUserFailedResponse>(user)
+			};
+
+			
+			_logger.LogWarning($"User with email {request.Email} failed created new user");
+			return BadRequest(badRequestResponse);
+		}
+		
+		ApiResponse<CreateUserSuccessResponse> successResponse = new ApiResponse<CreateUserSuccessResponse>()
 		{
 			Status = StatusCodes.Status200OK,
 			Message = "success created new user",
-			Data = user
+			Data = _mapper.Map<CreateUserSuccessResponse>(user)
 		};
-
+		
 		_logger.LogInformation($"User with email {request.Email} successfully created");
-		return Ok(response);
+		return Ok(successResponse);
 	}
 
 	[HttpPatch]

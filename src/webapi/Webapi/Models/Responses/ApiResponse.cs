@@ -1,4 +1,4 @@
-namespace Webapi.Models;
+namespace Webapi.Models.Responses;
 
 public class ApiResponse<T> where T: class?
 {

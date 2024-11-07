@@ -1,4 +1,4 @@
-namespace Webapi.Models.ErrorResponse;
+namespace Webapi.Models.Errors.ValidationException;
 
 public class ValidationErrorResponse
 {
