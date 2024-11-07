@@ -1,7 +1,6 @@
 using Application.Features.UserFeatures.Interface;
 using AutoMapper;
 using Domain.Entites;
-using FluentValidation;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
 
@@ -35,14 +34,15 @@ public class CreateUserHandler : ICreateUserHandler
 
 		var identityResult =  await _userManager.CreateAsync(newUser, request.Password);
 		var response = _mapper.Map<CreateUserResponse>(identityResult);
+		response = _mapper.Map(newUser, response);
 		if(!identityResult.Succeeded)
 		{
 			_logger.LogWarning($"User creation failed for user with email {request.Email}");			
-			return _mapper.Map(newUser, response);
+			return response;
 		}
 		
 		_logger.LogInformation($"Saving new user to database for user with email {request.Email}");
 		_logger.LogInformation($"User successfully saved in database for user with email {request.Email}");
-		return _mapper.Map(newUser, response);
+		return response;
 	}
 }

@@ -1,54 +1,49 @@
 using Application.Features.UserFeatures.Interface;
 using AutoMapper;
 using Domain.Entites;
-using FluentValidation;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
-using Presistence.Repository.Interface;
 
 namespace Application.Features.UserFeatures.DeleteUser;
 
 public class DeleteUserHandler : IDeleteUserHandler
 {
-	private readonly IUnitofWork _unitofWork;
+	private readonly UserManager<User> _userManager;
 	private readonly IMapper _mapper;
-	private readonly IValidator<DeleteUserRequest> _validator;
 	private readonly ILogger<DeleteUserHandler> _logger;
 
 	public DeleteUserHandler(
-		IUnitofWork unitofWork,
+		UserManager<User> userManager,
 		IMapper mapper,
-		IValidator<DeleteUserRequest> validator,
 		ILogger<DeleteUserHandler> logger)
 	{
-		_unitofWork = unitofWork;
+		_userManager = userManager;
 		_mapper = mapper;
-		_validator = validator;
 		_logger = logger;
 	}
 
 	public async Task<DeleteUserResponse?> HandleAsync(DeleteUserRequest request)
 	{
 		_logger.LogInformation($"Starting to process DeleteUserHandler request for user with id {request.Id}");
-		var result = _validator.Validate(request);
-		if(!result.IsValid)
-		{
-			_logger.LogWarning($"Validation failed for DeleteUserHandler request for user with id {request.Id}");
-			_validator.ValidateAndThrow(request);
-		}
 		
-		var user = await _unitofWork.Repository<User>().GetAsync(request.Id);
+		User? user = await _userManager.FindByIdAsync(request.Id.ToString());
 		if(user is null)
 		{
 			_logger.LogWarning($"User not found for user with id {request.Id}");
 			return null;
 		}
 		
-		_unitofWork.Repository<User>().Delete(user);
 		_logger.LogInformation($"Delete user from database for user with id {request.Id}");
+		IdentityResult identityResult = await _userManager.DeleteAsync(user);
+		DeleteUserResponse response = _mapper.Map<DeleteUserResponse>(identityResult);
+		response = _mapper.Map(user, response);
+		if(!identityResult.Succeeded)
+		{
+			_logger.LogWarning($"User failed deleted from database for user with id {request.Id}");
+			return response;
+		}
 		
-		await _unitofWork.SaveChangeAsync();
 		_logger.LogInformation($"User successfully deleted from database for user with id {request.Id}");
-		
-		return _mapper.Map<DeleteUserResponse>(user);
+		return response;
 	}
 }

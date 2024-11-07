@@ -123,7 +123,6 @@ public class UserController : ControllerBase
 				Data = _mapper.Map<CreateUserFailedResponse>(user)
 			};
 
-			
 			_logger.LogWarning($"User with email {request.Email} failed created new user");
 			return BadRequest(badRequestResponse);
 		}
@@ -201,32 +200,52 @@ public class UserController : ControllerBase
 	}
 
 	[HttpDelete("{id}")]
-	[ProducesResponseType(StatusCodes.Status200OK)]
+	[ProducesResponseType<ApiResponse<DeleteUserSuccessResponse>>(StatusCodes.Status200OK)]
 	[ProducesResponseType<ApiResponse<object>>(StatusCodes.Status404NotFound)]
-	[ProducesResponseType<ValidationErrorResponse>(StatusCodes.Status400BadRequest)]
-	public async Task<ActionResult<ApiResponse<DeleteUserResponse>>> DeleteUser([FromRoute] Guid id)
+	[ProducesResponseType<ApiResponse<DeleteUserFailedResponse>>(StatusCodes.Status400BadRequest)]
+	public async Task<IActionResult> DeleteUser([FromRoute] Guid id)
 	{
 		_logger.LogInformation($"Starting to process DeleteUser request for user with id {id}");
-		var user = await _userFacade.DeleteUserAsync(new DeleteUserRequest() { Id = id });
-		
-		ApiResponse<DeleteUserResponse> response = new ApiResponse<DeleteUserResponse>()
+		DeleteUserRequest request = new DeleteUserRequest()
 		{
-			Data = user
+			Id = id
+		};
+		var user = await _userFacade.DeleteUserAsync(request);
+		
+		if(user is null)
+		{
+			var notFoundResponse = new ApiResponse<object>()
+			{
+				Status = StatusCodes.Status404NotFound,
+				Message = "user not found",
+				Data = null
+			};
+			
+			_logger.LogWarning($"User with id {request.Id} not found");
+			return NotFound(notFoundResponse);
+		}
+		
+		if(!user.IsSuccess)
+		{
+			var badRequestResponse = new ApiResponse<DeleteUserFailedResponse>()
+			{
+				Status = StatusCodes.Status400BadRequest,
+				Message = "failed deleted user",
+				Data = _mapper.Map<DeleteUserFailedResponse>(user)
+			};
+			
+			_logger.LogWarning($"User with id {request.Id} failed deleted");
+			return BadRequest(badRequestResponse);
+		}
+		
+		var successResponse = new ApiResponse<DeleteUserSuccessResponse>()
+		{
+			Status = StatusCodes.Status200OK,
+			Message = "success deleted user",
+			Data = _mapper.Map<DeleteUserSuccessResponse>(user)
 		};
 		
-		if (user is null)
-		{
-			response.Status = StatusCodes.Status404NotFound;
-			response.Message = "user not found";
-			
-			_logger.LogWarning($"User with id {id} not found");
-			return NotFound(response);
-		}
-
-		response.Status = StatusCodes.Status200OK;
-		response.Message = "success deleted user";
-		
-		_logger.LogInformation($"Successfully deleted user with id {id}");
+		_logger.LogInformation($"Successfully deleted user with id {request.Id}");
 		return Ok(user);
 	}
 }

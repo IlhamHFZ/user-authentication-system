@@ -1,4 +1,5 @@
 using Application.Features.UserFeatures.CreateUser;
+using Application.Features.UserFeatures.DeleteUser;
 using AutoMapper;
 using Webapi.Models.Responses.User;
 
@@ -10,5 +11,8 @@ public class UserMapper : Profile
 	{
 		CreateMap<CreateUserResponse, CreateUserFailedResponse>();
 		CreateMap<CreateUserResponse, CreateUserSuccessResponse>();
+		
+		CreateMap<DeleteUserResponse, DeleteUserFailedResponse>();
+		CreateMap<DeleteUserResponse, DeleteUserSuccessResponse>();
 	}
 }
