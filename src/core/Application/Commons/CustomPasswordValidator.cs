@@ -10,7 +10,7 @@ public class CustomPasswordValidator : IPasswordValidator<User>
 	{
 		ICollection<IdentityError> errors = new List<IdentityError>();
 		
-		if(!password.Contains(user.UserName, StringComparison.OrdinalIgnoreCase))
+		if(password.Contains(user.UserName, StringComparison.OrdinalIgnoreCase))
 		{
 			errors.Add(new IdentityError()
 			{
@@ -21,7 +21,7 @@ public class CustomPasswordValidator : IPasswordValidator<User>
 		
 		string pattern = @"^(?!.*(?i)((a|4|@)(|d|&)m(i|!|1)n|p(a|@|4)(s|$|5)(s|$|5)w(o|0)r(d|&)|w(o|0)r(d|&))).*$";
 		Regex regex = new Regex(pattern);
-		if(regex.IsMatch(password))
+		if(!regex.IsMatch(password))
 		{
 			errors.Add(new IdentityError()
 			{

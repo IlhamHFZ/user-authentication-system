@@ -56,7 +56,7 @@ public class CustomUserValidator : IUserValidator<User>
 		}
 		
 		Regex regex = new Regex(@"^[a-zA-Z ]+$");
-		if(regex.IsMatch(user.DisplayName))
+		if(!regex.IsMatch(user.DisplayName))
 		{
 			errors.Add(new IdentityError()
 			{
