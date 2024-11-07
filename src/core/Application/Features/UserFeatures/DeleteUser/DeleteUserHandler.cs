@@ -35,11 +35,12 @@ public class DeleteUserHandler : IDeleteUserHandler
 		
 		_logger.LogInformation($"Delete user from database for user with id {request.Id}");
 		IdentityResult identityResult = await _userManager.DeleteAsync(user);
+		
 		DeleteUserResponse response = _mapper.Map<DeleteUserResponse>(identityResult);
 		response = _mapper.Map(user, response);
 		if(!identityResult.Succeeded)
 		{
-			_logger.LogWarning($"User failed deleted from database for user with id {request.Id}");
+			_logger.LogWarning($"Failed to delete user from database for user with id {request.Id}");
 			return response;
 		}
 		

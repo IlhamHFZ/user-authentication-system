@@ -210,9 +210,9 @@ public class UserController : ControllerBase
 		{
 			Id = id
 		};
-		var user = await _userFacade.DeleteUserAsync(request);
+		var deleteResult = await _userFacade.DeleteUserAsync(request);
 		
-		if(user is null)
+		if(deleteResult is null)
 		{
 			var notFoundResponse = new ApiResponse<object>()
 			{
@@ -225,13 +225,13 @@ public class UserController : ControllerBase
 			return NotFound(notFoundResponse);
 		}
 		
-		if(!user.IsSuccess)
+		if(!deleteResult.IsSuccess)
 		{
 			var badRequestResponse = new ApiResponse<DeleteUserFailedResponse>()
 			{
 				Status = StatusCodes.Status400BadRequest,
 				Message = "failed deleted user",
-				Data = _mapper.Map<DeleteUserFailedResponse>(user)
+				Data = _mapper.Map<DeleteUserFailedResponse>(deleteResult)
 			};
 			
 			_logger.LogWarning($"User with id {request.Id} failed deleted");
@@ -242,10 +242,10 @@ public class UserController : ControllerBase
 		{
 			Status = StatusCodes.Status200OK,
 			Message = "success deleted user",
-			Data = _mapper.Map<DeleteUserSuccessResponse>(user)
+			Data = _mapper.Map<DeleteUserSuccessResponse>(deleteResult)
 		};
 		
-		_logger.LogInformation($"Successfully deleted user with id {request.Id}");
-		return Ok(user);
+		_logger.LogInformation($"Successfully to delete user with id {request.Id}");
+		return Ok(successResponse);
 	}
 }

@@ -32,17 +32,18 @@ public class CreateUserHandler : ICreateUserHandler
 			DisplayName = request.DisplayName
 		};
 
+		_logger.LogInformation($"Create user for user with email {request.Email}");
 		var identityResult =  await _userManager.CreateAsync(newUser, request.Password);
+		
 		var response = _mapper.Map<CreateUserResponse>(identityResult);
 		response = _mapper.Map(newUser, response);
 		if(!identityResult.Succeeded)
 		{
-			_logger.LogWarning($"User creation failed for user with email {request.Email}");			
+			_logger.LogWarning($"Failed to create user for user with email {request.Email}");			
 			return response;
 		}
 		
-		_logger.LogInformation($"Saving new user to database for user with email {request.Email}");
-		_logger.LogInformation($"User successfully saved in database for user with email {request.Email}");
+		_logger.LogInformation($"User successfully create in database for user with email {request.Email}");
 		return response;
 	}
 }
