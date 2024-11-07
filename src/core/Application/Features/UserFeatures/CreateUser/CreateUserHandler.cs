@@ -10,18 +10,15 @@ namespace Application.Features.UserFeatures.CreateUser;
 public class CreateUserHandler : ICreateUserHandler
 {
 	private readonly IMapper _mapper;
-	private readonly IValidator<CreateUserRequest> _validator;
 	private readonly ILogger<CreateUserHandler> _logger;
 	private readonly UserManager<User> _userManager;
 
 	public CreateUserHandler(
 		IMapper mapper,
-		IValidator<CreateUserRequest> validator,
 		ILogger<CreateUserHandler> logger,
 		UserManager<User> userManager)
 	{
 		_mapper = mapper;
-		_validator = validator;
 		_logger = logger;
 		_userManager = userManager;
 	}
@@ -29,13 +26,6 @@ public class CreateUserHandler : ICreateUserHandler
 	public async Task<CreateUserResponse> HandleAsync(CreateUserRequest request)
 	{
 		_logger.LogInformation($"Starting to process CreateUserHandler for user with email {request.Email}");
-		var result = _validator.Validate(request);
-		if(!result.IsValid)
-		{
-			_logger.LogWarning($"Validation failed for CreateUserHandler request for user with email {request.Email}");
-			_validator.ValidateAndThrow(request);
-		}
-
 		var newUser = new User()
 		{
 			UserName = request.UserName,

@@ -109,7 +109,6 @@ public class UserController : ControllerBase
 	[HttpPost]
 	[ProducesResponseType<ApiResponse<CreateUserSuccessResponse>>(StatusCodes.Status200OK)]
 	[ProducesResponseType<ApiResponse<CreateUserFailedResponse>>(StatusCodes.Status400BadRequest)]
-	[ProducesResponseType<ValidationErrorResponse>(StatusCodes.Status400BadRequest)]
 	public async Task<IActionResult> PostUser([FromBody] CreateUserRequest request)
 	{
 		_logger.LogInformation($"Starting to process PostUser request for user email {request.Email}");
