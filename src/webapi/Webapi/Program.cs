@@ -55,7 +55,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 			ValidIssuer = builder.Configuration["Jwt:Issuer"]
 		};
 	});
-
+// saving point
 builder.Services.AddIdentity<User, Role>(options =>
 {
 	options.Password.RequireDigit = true;
