@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Identity;
 
 namespace Webapi.Models.Responses.User;
 
-public class DeleteUserFailedResponse
+public record DeleteUserFailedResponse
 {
 	public Guid Id { get; set; }
 	public string Email {get; set;} = null!;

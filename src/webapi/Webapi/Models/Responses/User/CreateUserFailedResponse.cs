@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Identity;
 
 namespace Webapi.Models.Responses.User;
 
-public class CreateUserFailedResponse
+public record CreateUserFailedResponse
 {
 	public string Email {get; set;} = null!;
 	public string UserName {get; set;} = null!;

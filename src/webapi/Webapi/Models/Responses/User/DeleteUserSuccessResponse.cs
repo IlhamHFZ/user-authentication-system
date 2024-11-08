@@ -1,6 +1,6 @@
 namespace Webapi.Models.Responses.User;
 
-public class DeleteUserSuccessResponse
+public record DeleteUserSuccessResponse
 {
 	public Guid Id { get; set; }
 	public string Email {get; set;} = null!;
