@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Presistence.Context;
 
@@ -10,9 +11,11 @@ using Presistence.Context;
 namespace Presistence.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20241108090823_UpdatePropertiUser")]
+    partial class UpdatePropertiUser
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -99,10 +102,6 @@ namespace Presistence.Migrations
                     b.Property<DateTimeOffset?>("LockoutEnd")
                         .HasColumnType("datetime");
 
-                    b.Property<string>("NormalizeDisplayName")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
                     b.Property<string>("NormalizedEmail")
                         .HasMaxLength(256)
                         .HasColumnType("varchar(256)");
@@ -146,11 +145,10 @@ namespace Presistence.Migrations
                         {
                             Id = new Guid("0afb2aa1-d314-485c-8552-e29a546b1321"),
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "d10c147f-d7a3-40c0-8225-bf553504f4eb",
+                            ConcurrencyStamp = "e07704bd-8529-4c44-b18b-55d788060f6e",
                             DisplayName = "Kuma Power",
                             EmailConfirmed = false,
                             LockoutEnabled = false,
-                            NormalizeDisplayName = "kuma power",
                             PhoneNumberConfirmed = false,
                             TwoFactorEnabled = false,
                             UserName = "Hikaru Utada"
@@ -159,11 +157,10 @@ namespace Presistence.Migrations
                         {
                             Id = new Guid("253cd4c1-4b3f-4a2a-83ae-269c3bdb7879"),
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "624a9ada-6f37-402c-8d73-3fd773c868f2",
+                            ConcurrencyStamp = "b085e760-aca4-4794-9e88-7f05198de1d5",
                             DisplayName = "Miku 39",
                             EmailConfirmed = false,
                             LockoutEnabled = false,
-                            NormalizeDisplayName = "miku 39",
                             PhoneNumberConfirmed = false,
                             TwoFactorEnabled = false,
                             UserName = "Hatsune Miku"
@@ -172,11 +169,10 @@ namespace Presistence.Migrations
                         {
                             Id = new Guid("656b6830-6908-4d5a-81a6-a20d98bf7d2d"),
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "f02ef5ab-6265-4098-a52c-40c42f977ee5",
+                            ConcurrencyStamp = "b01ac45d-772f-4557-9349-ae317317dbf2",
                             DisplayName = "Luka",
                             EmailConfirmed = false,
                             LockoutEnabled = false,
-                            NormalizeDisplayName = "luka",
                             PhoneNumberConfirmed = false,
                             TwoFactorEnabled = false,
                             UserName = "Megurin Luka"

@@ -52,19 +52,22 @@ public class DataContext : IdentityDbContext<User, Role, Guid>
 			{
 				Id = Guid.Parse("0afb2aa1-d314-485c-8552-e29a546b1321"),
 				UserName = "Hikaru Utada",
-				DisplayName = "Kuma Power"
+				DisplayName = "Kuma Power",
+				NormalizeDisplayName = "Kuma Power".ToLower()
 			},
 			new User()
 			{
 				Id = Guid.Parse("253cd4c1-4b3f-4a2a-83ae-269c3bdb7879"),
 				UserName = "Hatsune Miku",
-				DisplayName = "Miku 39"
+				DisplayName = "Miku 39",
+				NormalizeDisplayName = "Miku 39".ToLower()
 			},
 			new User()
 			{
 				Id = Guid.Parse("656b6830-6908-4d5a-81a6-a20d98bf7d2d"),
 				UserName = "Megurin Luka",
-				DisplayName = "Luka"
+				DisplayName = "Luka",
+				NormalizeDisplayName = "Luka".ToLower()
 			}
 		};
 		
