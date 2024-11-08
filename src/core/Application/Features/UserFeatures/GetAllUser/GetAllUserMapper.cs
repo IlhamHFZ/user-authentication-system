@@ -6,7 +6,7 @@ namespace Application.Features.UserFeatures.GetAllUser;
 public class GetAllUserMapper : Profile
 {
 	public GetAllUserMapper()
-    {
-    	CreateMap<User, GetAllUserResponse>();
-    }
+	{
+		CreateMap<User, GetAllUserResponse>();
+	}
 }
