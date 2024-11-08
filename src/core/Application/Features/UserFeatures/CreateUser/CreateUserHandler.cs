@@ -29,7 +29,8 @@ public class CreateUserHandler : ICreateUserHandler
 		{
 			UserName = request.UserName,
 			Email = request.Email,
-			DisplayName = request.DisplayName
+			DisplayName = request.DisplayName,
+			NormalizeDisplayName = request.DisplayName.ToLower()
 		};
 
 		_logger.LogInformation($"Create user for user with email {request.Email}");
