@@ -4,5 +4,5 @@ namespace Application.Features.UserFeatures.Interface;
 
 public interface IGetAllUserHandler
 {
-	Task<IEnumerable<GetAllUserResponse>?> HandleAsync(GetAllUserRequest request);
+	Task<IEnumerable<GetAllUserResponse>> HandleAsync(GetAllUserRequest request);
 }
