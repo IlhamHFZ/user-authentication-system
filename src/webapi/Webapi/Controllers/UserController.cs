@@ -5,6 +5,7 @@ using Application.Features.UserFeatures.GetAllUser;
 using Application.Features.UserFeatures.GetByIdUser;
 using Application.Features.UserFeatures.UpdateUser;
 using Application.Features.UserFeatures.UpdateUserProfile;
+using Application.Shared;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Webapi.Models.Errors.ValidationException;
@@ -29,38 +30,51 @@ public class UserController : ControllerBase
 	}
 
 	[HttpGet]
-	[ProducesResponseType(StatusCodes.Status200OK)]
+	[ProducesResponseType<ApiResponse<GetAllUserSuccessResponse>>(StatusCodes.Status200OK)]
 	[ProducesResponseType<ApiResponse<object>>(StatusCodes.Status404NotFound)]
-	public async Task<ActionResult<ApiResponse<IEnumerable<GetAllUserResponse>>>> GetAllUser(
-		[FromQuery] string? filterOn,
+	public async Task<IActionResult> GetAllUser(
 		[FromQuery] string? filterQuery,
-		[FromQuery] string sortBy = "username",
+		[FromQuery] string? filterOn = "displayname",
+		[FromQuery] string? sortBy = "emailconfirmed",
 		[FromQuery] bool isAscending = true,
 		[FromQuery] int pageSize = 10,
 		[FromQuery] int pageCurrent = 1
 	)
 	{
-		
 		_logger.LogInformation("Starting to process GetAllUser request");
 		var request = new GetAllUserRequest()
 		{
-			FilterOn = filterOn,
-			FilterQuery = filterQuery,
-			SortBy = sortBy,
-			IsAscending = isAscending,
-			PageSize = pageSize,
-			PageCurrent = pageCurrent
+			QueryParameters = new QueryParameters()
+			{
+				Filtering = new Filtering()
+				{
+					FilterOn = filterOn,
+					FilterQuery = filterQuery,			
+				},
+				Sorting = new Sorting()
+				{
+					SortBy = sortBy,
+					IsAscending = isAscending,
+				},
+				Pagination = new Pagination()
+				{
+					PageSize = pageSize,
+					PageCurrent = pageCurrent
+				}
+			}
 		};
 		var users = await _userFacade.GetAllUserAsync(request);
 
-		ApiResponse<IEnumerable<GetAllUserResponse>> response = new ApiResponse<IEnumerable<GetAllUserResponse>>()
+		ApiResponse<IEnumerable<GetAllUserSuccessResponse>> response = new ApiResponse<IEnumerable<GetAllUserSuccessResponse>>()
 		{
-			Data = users
+			Data = _mapper.Map<IEnumerable<GetAllUserSuccessResponse>>(users),
+			Filtering = request.QueryParameters.Filtering,
+			Sorting = request.QueryParameters.Sorting,
+			Pagination = request.QueryParameters.Pagination
 		};
 
-		if (users is null)
+		if (!users.Any())
 		{
-
 			response.Status = StatusCodes.Status404NotFound;
 			response.Message = "users not found";
 
