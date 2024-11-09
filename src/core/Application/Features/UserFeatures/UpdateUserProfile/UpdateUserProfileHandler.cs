@@ -1,7 +1,9 @@
+using System.Diagnostics.CodeAnalysis;
 using Application.Features.UserFeatures.Interface;
 using AutoMapper;
 using Domain.Entites;
 using FluentValidation;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
 using Presistence.Repository.Interface;
 
@@ -9,46 +11,45 @@ namespace Application.Features.UserFeatures.UpdateUserProfile;
 
 public class UpdateUserProfileHandler : IUpdateUserProfileHandler
 {
-	private readonly IUnitofWork _unitofWork;
+	private readonly UserManager<User> _userManager;
 	private readonly IMapper _mapper;
-	private readonly IValidator<UpdateUserProfileRequest> _validator;
 	private readonly ILogger<UpdateUserProfileHandler> _logger;
 
 	public UpdateUserProfileHandler(
-		IUnitofWork unitofWork,
+		UserManager<User> userManager,
 		IMapper mapper,
-		IValidator<UpdateUserProfileRequest> validator,
 		ILogger<UpdateUserProfileHandler> logger)
 	{
-		_unitofWork = unitofWork;
+		_userManager = userManager;
 		_mapper = mapper;
-		_validator = validator;
 		_logger = logger;
 	}
 
 	public async Task<UpdateUserProfileResponse?> HandleAsync(UpdateUserProfileRequest request)
 	{
 		_logger.LogInformation($"Starting to process UpdateUserProfileHandler request for user with id {request.Id}");
-		var result = _validator.Validate(request);
-		if(!result.IsValid)
-		{
-			_logger.LogWarning($"Validation failed for UpdateUserProfileHandler request for user with id {request.Id}");
-			_validator.ValidateAndThrow(request);
-		}
-		
-		var user = await _unitofWork.Repository<User>().GetAsync(request.Id);
-		if(user is null)
+
+		var user = await _userManager.FindByIdAsync(request.Id.ToString());
+		if (user is null)
 		{
 			_logger.LogWarning($"User not found for user with id {request.Id}");
 			return null;
 		}
+
+		user.UserName = request.UserName.Length != 0 ? request.UserName : user.UserName;
+		user.DisplayName = request.DisplayName.Length != 0 ? request.DisplayName.ToUpperInvariant() : user.DisplayName;		
 		
-		user.UserName = request.UserName ?? user.UserName;
-		user.DisplayName = request.DisplayName ?? user.DisplayName;
+		var identityResult = await _userManager.UpdateAsync(user);
+		var response = _mapper.Map<UpdateUserProfileResponse>(identityResult);
+		response = _mapper.Map(user, response);
+		if(!identityResult.Succeeded)
+		{
+			_logger.LogWarning($"Failed to update user profile for user with id {request.Id}");
+			return response;
+		}
 		
-		await _unitofWork.SaveChangeAsync();
 		_logger.LogInformation($"User successfully updated in database for user with id {request.Id}");
 		
-		return _mapper.Map<UpdateUserProfileResponse>(user);
+		return response;
 	}
 }
