@@ -24,13 +24,13 @@ public class GetAllUserHandler : IGetAllUserHandler
 		_logger = logger;
 	}
 
-	public async Task<IEnumerable<GetAllUserResponse>> HandleAsync(GetAllUserRequest request)
+	public  Task<IEnumerable<GetAllUserResponse>> HandleAsync(GetAllUserRequest request)
 	{
 		_logger.LogInformation($"Starting to process GetAllUserHandler request");
 		if(request.QueryParameters.Pagination.PageSize <= 0 || request.QueryParameters.Pagination.PageCurrent <= 0)
 		{
 			_logger.LogWarning($"Page size: {request.QueryParameters.Pagination.PageSize}, Page Current: {request.QueryParameters.Pagination.PageCurrent}, can not take negative number");
-			return Enumerable.Empty<GetAllUserResponse>();
+			return Task.FromResult(Enumerable.Empty<GetAllUserResponse>());
 		}
 		
 		if(string.IsNullOrWhiteSpace(request.QueryParameters.Filtering.FilterQuery))
@@ -78,10 +78,10 @@ public class GetAllUserHandler : IGetAllUserHandler
 		if(users is null)
 		{
 			_logger.LogWarning("No users found for the given criteria");
-			return Enumerable.Empty<GetAllUserResponse>();
+			return Task.FromResult(Enumerable.Empty<GetAllUserResponse>());
 		}
 		
 		_logger.LogInformation($"Successfully retrieved {users.Count()} users for the given criteria");
-		return _mapper.Map<IEnumerable<GetAllUserResponse>>(users);
+		return Task.FromResult(_mapper.Map<IEnumerable<GetAllUserResponse>>(users));
 	}
 }
