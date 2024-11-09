@@ -90,22 +90,20 @@ public class UserController : ControllerBase
 	}
 
 	[HttpGet("{id}")]
-	[ProducesResponseType(StatusCodes.Status200OK)]
+	[ProducesResponseType<ApiResponse<GetByIdUserSuccessResponse>>(StatusCodes.Status200OK)]
 	[ProducesResponseType<ApiResponse<object>>(StatusCodes.Status404NotFound)]
-	[ProducesResponseType<ValidationErrorResponse>(StatusCodes.Status400BadRequest)]
-	public async Task<ActionResult<ApiResponse<GetByIdUserResponse>>> GetById([FromRoute] Guid id)
+	public async Task<IActionResult> GetById([FromRoute] Guid id)
 	{
 		_logger.LogInformation($"Starting to process GetById request for user with id {id}");
 		var user = await _userFacade.GetByIdUserAsync(new GetByIdUserRequest() { Id = id });
 
-		ApiResponse<GetByIdUserResponse> response = new ApiResponse<GetByIdUserResponse>()
+		ApiResponse<GetByIdUserSuccessResponse> response = new ApiResponse<GetByIdUserSuccessResponse>()
 		{
-			Data = user
+			Data = _mapper.Map<GetByIdUserSuccessResponse>(user)
 		};
 
 		if (user is null)
 		{
-
 			response.Status = StatusCodes.Status404NotFound;
 			response.Message = "user not found";
 
@@ -152,65 +150,48 @@ public class UserController : ControllerBase
 		return Ok(successResponse);
 	}
 
-	[HttpPatch]
-	[ProducesResponseType(StatusCodes.Status200OK)]
-	[ProducesResponseType<ApiResponse<object>>(StatusCodes.Status404NotFound)]
-	[ProducesResponseType<ValidationErrorResponse>(StatusCodes.Status400BadRequest)]
-	public async Task<ActionResult<ApiResponse<UpdateUserResponse>>> PatchUser([FromBody] UpdateUserRequest request)
-	{
-		_logger.LogInformation($"Starting to process PatchUser request for user with id {request.UserId}");
-		var user = await _userFacade.UpdateUserAsync(request);
-
-		ApiResponse<UpdateUserResponse> response = new ApiResponse<UpdateUserResponse>()
-		{
-			Data = user
-		};
-
-		if (user is null)
-		{
-
-			response.Status = StatusCodes.Status404NotFound;
-			response.Message = "user or role not found";
-
-			_logger.LogWarning($"User with id {request.UserId} not found");
-			return NotFound(response);
-		}
-
-		response.Status = StatusCodes.Status200OK;
-		response.Message = "success updated user";
-
-		_logger.LogInformation($"Successfully updated user with id {request.UserId}");
-		return Ok(response);
-	}
-
 	[HttpPatch("profile")]
-	[ProducesResponseType(StatusCodes.Status200OK)]
+	[ProducesResponseType<ApiResponse<UpdateUserProfileSuccessResponse>>(StatusCodes.Status200OK)]
 	[ProducesResponseType<ApiResponse<object>>(StatusCodes.Status404NotFound)]
-	[ProducesResponseType<ValidationErrorResponse>(StatusCodes.Status400BadRequest)]
-	public async Task<ActionResult<ApiResponse<UpdateUserProfileResponse>>> PatchUserProfile([FromBody] UpdateUserProfileRequest request)
+	[ProducesResponseType<ApiResponse<UpdateUserProfileFailedResponse>>(StatusCodes.Status400BadRequest)]
+	public async Task<IActionResult> PatchUserProfile([FromBody] UpdateUserProfileRequest request)
 	{
-		_logger.LogInformation($"Starting to process PatchUSerProfile request for user with id {request.GetType}");
+		_logger.LogInformation($"Starting to process PatchUSerProfile request for user with id {request.Id}");
 		var user = await _userFacade.UpdateUserProfileAsync(request);
-
-		ApiResponse<UpdateUserProfileResponse> response = new ApiResponse<UpdateUserProfileResponse>()
-		{
-			Data = user
-		};
-
 		if (user is null)
 		{
-			response.Status = StatusCodes.Status404NotFound;
-			response.Message = "user not found";
+			var notFoundResponse = new ApiResponse<object>()
+			{
+				Status = StatusCodes.Status404NotFound,
+				Message = "user not found",
+				Data = null
+			};
 			
 			_logger.LogWarning($"User with id {request.Id} not found");
-			return NotFound(response);
+			return NotFound(notFoundResponse);
 		}
-
-		response.Status = StatusCodes.Status200OK;
-		response.Message = "success updated profile user";
 		
-		_logger.LogInformation($"Successfully updated profile user with id {request.Id}");
-		return Ok(response);
+		if (!user.IsSuccess)
+		{
+			var badRequestResponse = new ApiResponse<UpdateUserProfileFailedResponse>()
+			{
+				Status = StatusCodes.Status400BadRequest,
+				Message = "failed update user profile",
+				Data = _mapper.Map<UpdateUserProfileFailedResponse>(user)
+			};
+			
+			_logger.LogWarning($"User with id {request.Id} failed update user profile");
+			return BadRequest(badRequestResponse);
+		}
+		
+		var successResponse = new ApiResponse<UpdateUserProfileSuccessResponse>()
+		{
+			Status = StatusCodes.Status200OK,
+			Message = "success",
+			Data = _mapper.Map<UpdateUserProfileSuccessResponse>(user)
+		};
+		
+		return Ok(successResponse);
 	}
 
 	[HttpDelete("{id}")]
