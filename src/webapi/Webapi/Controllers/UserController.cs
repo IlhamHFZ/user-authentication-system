@@ -6,9 +6,11 @@ using Application.Features.UserFeatures.GetByIdUser;
 using Application.Features.UserFeatures.UpdateUser;
 using Application.Features.UserFeatures.UpdateUserAddRole;
 using Application.Features.UserFeatures.UpdateUserProfile;
+using Application.Features.UserFeatures.UpdateUserRemoveRole;
 using Application.Shared;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using Org.BouncyCastle.Bcpg;
 using Webapi.Models.Errors.ValidationException;
 using Webapi.Models.Responses;
 using Webapi.Models.Responses.User;
@@ -190,6 +192,51 @@ public class UserController : ControllerBase
 			Status = StatusCodes.Status200OK,
 			Message = "success",
 			Data = _mapper.Map<UpdateUserAddRoleSuccessResponse>(user)
+		};
+		
+		_logger.LogInformation($"Successfully to add role to user with id {request.UserId}");
+		return Ok(successResponse);
+	}
+	
+	[HttpPatch("removerole")]
+	[ProducesResponseType<ApiResponse<UpdateUserRemoveRoleSuccessResponse>>(StatusCodes.Status200OK)]
+	[ProducesResponseType<ApiResponse<object>>(StatusCodes.Status404NotFound)]
+	[ProducesResponseType<ApiResponse<UpdateUserRemoveRoleFailedResponse>>(StatusCodes.Status400BadRequest)]
+	public async Task<IActionResult> PatchUserRemoveRole([FromBody] UpdateUserRemoveRoleRequest request)
+	{
+		_logger.LogInformation($"Starting to process PatchUserRemoveRole request for user with id {request.UserId}");
+		var user = await _userFacade.UpdateUserRemoveRoleAsync(request);
+		if(user is null)
+		{
+			var notFoundResponse = new ApiResponse<object>
+			{
+				Status = StatusCodes.Status404NotFound,
+				Message = "user or role not found",
+				Data = null
+			};
+			
+			_logger.LogWarning($"User with id {request.UserId} or role with id {request.RoleId} not found");
+			return NotFound(notFoundResponse);
+		}
+		
+		if(!user.IsSuccess)
+		{
+			var badRequestResponse = new ApiResponse<UpdateUserRemoveRoleFailedResponse>()
+			{
+				Status = StatusCodes.Status400BadRequest,
+				Message = "failed add role to user",
+				Data = _mapper.Map<UpdateUserRemoveRoleFailedResponse>(user)
+			};
+			
+			_logger.LogWarning($"User withd id {request.UserId} failed add role to user");
+			return BadRequest(badRequestResponse);
+		}
+		
+		var successResponse = new ApiResponse<UpdateUserRemoveRoleSuccessResponse>()
+		{
+			Status = StatusCodes.Status200OK,
+			Message = "success",
+			Data = _mapper.Map<UpdateUserRemoveRoleSuccessResponse>(user)
 		};
 		
 		_logger.LogInformation($"Successfully to add role to user with id {request.UserId}");
