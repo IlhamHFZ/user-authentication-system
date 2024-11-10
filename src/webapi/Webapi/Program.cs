@@ -27,6 +27,7 @@ using Application.Features.RoleFeatures.GetByIdRole;
 using Application.Features.RoleFeatures.DeleteRole;
 using Application.Commons;
 using Application.Features.UserFeatures.UpdateUserAddRole;
+using Application.Features.UserFeatures.UpdateUserRemoveRole;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -101,6 +102,7 @@ builder.Services.AddScoped<IGetAllUserHandler, GetAllUserHandler>();
 builder.Services.AddScoped<IGetByIdUserHandler, GetByIdUserHandler>();
 builder.Services.AddScoped<IUpdateUserHandler, UpdateUserHandler>();
 builder.Services.AddScoped<IUpdateUserAddRoleHandler, UpdateUserAddRoleHandler>();
+builder.Services.AddScoped<IUpdateUserRemoveRoleHandler, UpdateUserRemoveRoleHandler>();
 builder.Services.AddScoped<IUpdateUserProfileHandler, UpdateUserProfileHandler>();
 
 builder.Services.AddScoped<IRoleFacade, RoleFacade>();
