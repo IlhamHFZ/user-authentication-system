@@ -26,6 +26,7 @@ using Application.Features.RoleFeatures.GetAllRole;
 using Application.Features.RoleFeatures.GetByIdRole;
 using Application.Features.RoleFeatures.DeleteRole;
 using Application.Commons;
+using Application.Features.UserFeatures.UpdateUserAddRole;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -99,6 +100,7 @@ builder.Services.AddScoped<IDeleteUserHandler, DeleteUserHandler>();
 builder.Services.AddScoped<IGetAllUserHandler, GetAllUserHandler>();
 builder.Services.AddScoped<IGetByIdUserHandler, GetByIdUserHandler>();
 builder.Services.AddScoped<IUpdateUserHandler, UpdateUserHandler>();
+builder.Services.AddScoped<IUpdateUserAddRoleHandler, UpdateUserAddRoleHandler>();
 builder.Services.AddScoped<IUpdateUserProfileHandler, UpdateUserProfileHandler>();
 
 builder.Services.AddScoped<IRoleFacade, RoleFacade>();
@@ -111,6 +113,11 @@ builder.Services.AddAutoMapper(Assembly.Load("Application"), Assembly.Load("Weba
 builder.Services.AddValidatorsFromAssembly(Assembly.Load("Application"));
 
 var app = builder.Build();
+
+/*
+TODO:
+tolong benerin api response untuk badrequest. badrequest itu harus error bukan data!!.
+*/
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
