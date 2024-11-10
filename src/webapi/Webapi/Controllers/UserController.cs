@@ -4,6 +4,7 @@ using Application.Features.UserFeatures.DeleteUser;
 using Application.Features.UserFeatures.GetAllUser;
 using Application.Features.UserFeatures.GetByIdUser;
 using Application.Features.UserFeatures.UpdateUser;
+using Application.Features.UserFeatures.UpdateUserAddRole;
 using Application.Features.UserFeatures.UpdateUserProfile;
 using Application.Shared;
 using AutoMapper;
@@ -150,6 +151,51 @@ public class UserController : ControllerBase
 		return Ok(successResponse);
 	}
 
+	[HttpPatch("addrole")]
+	[ProducesResponseType<ApiResponse<UpdateUserAddRoleSuccessResponse>>(StatusCodes.Status200OK)]
+	[ProducesResponseType<ApiResponse<object>>(StatusCodes.Status404NotFound)]
+	[ProducesResponseType<ApiResponse<UpdateUserAddRoleFailedResponse>>(StatusCodes.Status400BadRequest)]
+	public async Task<IActionResult> PatchUserAddRole([FromBody] UpdateUserAddRoleRequest request)
+	{
+		_logger.LogInformation($"Starting to process PatchUserAddROle request for user with id {request.UserId}");
+		var user = await _userFacade.UpdateUserAddRoleAsync(request);
+		if(user is null)
+		{
+			var notFoundResponse = new ApiResponse<object>()
+			{
+				Status = StatusCodes.Status404NotFound,
+				Message = "user or role not found",
+				Data = null
+			};
+			
+			_logger.LogWarning($"User with id {request.UserId} or role with id {request.RoleId} not found");
+			return NotFound(notFoundResponse);
+		}
+		
+		if(!user.IsSuccess)
+		{
+			var badRequestResponse = new ApiResponse<UpdateUserAddRoleFailedResponse>()
+			{
+				Status = StatusCodes.Status400BadRequest,
+				Message = "failed add role to user",
+				Data = _mapper.Map<UpdateUserAddRoleFailedResponse>(user)
+			};
+			
+			_logger.LogWarning($"User withd id {request.UserId} failed add role to user");
+			return BadRequest(badRequestResponse);
+		}
+		
+		var successResponse = new ApiResponse<UpdateUserAddRoleSuccessResponse>()
+		{
+			Status = StatusCodes.Status200OK,
+			Message = "success",
+			Data = _mapper.Map<UpdateUserAddRoleSuccessResponse>(user)
+		};
+		
+		_logger.LogInformation($"Successfully to add role to user with id {request.UserId}");
+		return Ok(successResponse);
+	}
+	
 	[HttpPatch("profile")]
 	[ProducesResponseType<ApiResponse<UpdateUserProfileSuccessResponse>>(StatusCodes.Status200OK)]
 	[ProducesResponseType<ApiResponse<object>>(StatusCodes.Status404NotFound)]
