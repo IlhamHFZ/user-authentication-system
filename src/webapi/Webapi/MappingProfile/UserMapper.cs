@@ -4,6 +4,7 @@ using Application.Features.UserFeatures.GetAllUser;
 using Application.Features.UserFeatures.GetByIdUser;
 using Application.Features.UserFeatures.UpdateUserAddRole;
 using Application.Features.UserFeatures.UpdateUserProfile;
+using Application.Features.UserFeatures.UpdateUserRemoveRole;
 using AutoMapper;
 using Webapi.Models.Responses.User;
 
@@ -28,5 +29,8 @@ public class UserMapper : Profile
 		
 		CreateMap<UpdateUserAddRoleResponse, UpdateUserAddRoleSuccessResponse>();
 		CreateMap<UpdateUserAddRoleResponse, UpdateUserAddRoleFailedResponse>();
+		
+		CreateMap<UpdateUserRemoveRoleResponse, UpdateUserRemoveRoleSuccessResponse>();
+		CreateMap<UpdateUserRemoveRoleResponse, UpdateUserRemoveRoleFailedResponse>();
 	}
 }
