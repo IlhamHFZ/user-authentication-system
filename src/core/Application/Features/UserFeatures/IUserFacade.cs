@@ -3,6 +3,7 @@ using Application.Features.UserFeatures.DeleteUser;
 using Application.Features.UserFeatures.GetAllUser;
 using Application.Features.UserFeatures.GetByIdUser;
 using Application.Features.UserFeatures.UpdateUser;
+using Application.Features.UserFeatures.UpdateUserAddRole;
 using Application.Features.UserFeatures.UpdateUserProfile;
 
 namespace Application.Features.UserFeatures;
@@ -14,5 +15,6 @@ public interface IUserFacade
 	Task<IEnumerable<GetAllUserResponse>> GetAllUserAsync(GetAllUserRequest request);
 	Task<GetByIdUserResponse?> GetByIdUserAsync(GetByIdUserRequest request);
 	Task<UpdateUserResponse?> UpdateUserAsync(UpdateUserRequest request);
+	Task<UpdateUserAddRoleResponse?> UpdateUserAddRoleAsync(UpdateUserAddRoleRequest request);
 	Task<UpdateUserProfileResponse?> UpdateUserProfileAsync(UpdateUserProfileRequest request); 
 }
