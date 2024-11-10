@@ -6,6 +6,7 @@ using Application.Features.UserFeatures.Interface;
 using Application.Features.UserFeatures.UpdateUser;
 using Application.Features.UserFeatures.UpdateUserAddRole;
 using Application.Features.UserFeatures.UpdateUserProfile;
+using Application.Features.UserFeatures.UpdateUserRemoveRole;
 
 namespace Application.Features.UserFeatures;
 
@@ -17,6 +18,7 @@ public class UserFacade : IUserFacade
 	private readonly IGetByIdUserHandler _getByIdUserHandler;
 	private readonly IUpdateUserHandler _updateUserHandler;
 	private readonly IUpdateUserAddRoleHandler _updateUserAddRoleHandler;
+	private readonly IUpdateUserRemoveRoleHandler _updateUserRemoveHandler;
 	private readonly IUpdateUserProfileHandler _updateUserProfileHandler;
 
 	public UserFacade(
@@ -26,6 +28,7 @@ public class UserFacade : IUserFacade
 		IGetByIdUserHandler getByIdUserHandler, 
 		IUpdateUserHandler updateUserHandler, 
 		IUpdateUserAddRoleHandler updateUserAddRoleHandler,
+		IUpdateUserRemoveRoleHandler updateUserRemoveRoleHandler,
 		IUpdateUserProfileHandler updateUserProfileHandler)
 	{
 		_createUserHandler = createUserHandler;
@@ -34,6 +37,7 @@ public class UserFacade : IUserFacade
 		_getByIdUserHandler = getByIdUserHandler;
 		_updateUserHandler = updateUserHandler;
 		_updateUserAddRoleHandler = updateUserAddRoleHandler;
+		_updateUserRemoveHandler = updateUserRemoveRoleHandler;
 		_updateUserProfileHandler = updateUserProfileHandler;
 	}
 
@@ -65,6 +69,11 @@ public class UserFacade : IUserFacade
 	public async Task<UpdateUserAddRoleResponse?> UpdateUserAddRoleAsync(UpdateUserAddRoleRequest request)
 	{
 		return await _updateUserAddRoleHandler.HandleAsync(request);
+	}
+	
+	public async Task<UpdateUserRemoveRoleResponse?> UpdateUserRemoveRoleAsync(UpdateUserRemoveRoleRequest request)
+	{
+		return await _updateUserRemoveHandler.HandleAsync(request);
 	}
 
 	public async Task<UpdateUserProfileResponse?> UpdateUserProfileAsync(UpdateUserProfileRequest request)
