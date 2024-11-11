@@ -35,7 +35,7 @@ public class RoleFacade : IRoleFacade
 		return await _deleteRoleHandler.HandleAsync(request);
 	}
 
-	public async Task<IEnumerable<GetAllRoleResponse>?> GetAllRoleAsync()
+	public async Task<IEnumerable<GetAllRoleResponse>> GetAllRoleAsync()
 	{
 		return await _getAllRoleHandler.HandleAsync();
 	}

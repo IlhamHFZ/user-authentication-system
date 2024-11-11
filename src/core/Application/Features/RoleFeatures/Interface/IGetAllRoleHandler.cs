@@ -4,5 +4,5 @@ namespace Application.Features.RoleFeatures.Interface;
 
 public interface IGetAllRoleHandler
 {
-	public Task<IEnumerable<GetAllRoleResponse>?> HandleAsync();
+	public Task<IEnumerable<GetAllRoleResponse>> HandleAsync();
 }

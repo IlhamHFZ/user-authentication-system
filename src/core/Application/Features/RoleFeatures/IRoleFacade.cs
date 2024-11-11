@@ -9,6 +9,6 @@ public interface IRoleFacade
 {
 	public Task<CreateRoleResponse> CreateRoleAsync(CreateRoleRequest request);
 	public Task<DeleteRoleResponse?> DeleteRoleAsync(DeleteRoleRequest request);
-	public Task<IEnumerable<GetAllRoleResponse>?> GetAllRoleAsync();
+	public Task<IEnumerable<GetAllRoleResponse>> GetAllRoleAsync();
 	public Task<GetByIdRoleResponse?> GetByIdRoleAsync(GetByIdRoleRequest request);
 }
