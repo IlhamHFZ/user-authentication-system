@@ -1,39 +1,38 @@
-using System.Reflection.Metadata.Ecma335;
 using Application.Features.RoleFeatures.Interface;
 using AutoMapper;
 using Domain.Entites;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
-using Org.BouncyCastle.Asn1.Cmp;
-using Presistence.Repository.Interface;
 
 namespace Application.Features.RoleFeatures.GetAllRole;
 
 public class GetAllRoleHandler : IGetAllRoleHandler
 {
-	private readonly IUnitofWork _unitofWork;
+	private readonly RoleManager<Role> _roleManager;
 	private readonly IMapper _mapper;
 	private readonly ILogger<GetAllRoleHandler> _logger;
 
 	public GetAllRoleHandler(
-		IUnitofWork unitofWork, 
+		RoleManager<Role> roleManager,
 		IMapper mapper, 
 		ILogger<GetAllRoleHandler> logger)
 	{
-		_unitofWork = unitofWork;
+		_roleManager = roleManager;
 		_mapper = mapper;
 		_logger = logger;
 	}
 
-	public async Task<IEnumerable<GetAllRoleResponse>?> HandleAsync()
+	public async Task<IEnumerable<GetAllRoleResponse>> HandleAsync()
 	{
 		_logger.LogInformation("Starting to process GetAllRoleHandler request");
-		var roles = await _unitofWork.Repository<Role>().GetAllAsync();
+		var roles = await Task.Run(() => _roleManager.Roles);
 		if(roles is null)
 		{
 			_logger.LogInformation("Roles not found");
-			return Enumerable.Empty<GetAllRoleResponse>();
+			return Enumerable.Empty<GetAllRoleResponse>();			
 		}
 		
+		_logger.LogInformation($"Successfully retrieved {roles.Count()} roles");
 		return _mapper.Map<IEnumerable<GetAllRoleResponse>>(roles);
 	}
 }
