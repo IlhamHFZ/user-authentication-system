@@ -33,6 +33,7 @@ public class GetByIdUserHandler : IGetByIdUserHandler
 			return null;
 		}
 		
+		_logger.LogInformation($"Successfully retrieved user with id {user.Id}");
 		return _mapper.Map<GetByIdUserResponse>(user);
 	}
 }
