@@ -7,6 +7,8 @@ public class GetAllRoleMapper : Profile
 {
 	public GetAllRoleMapper()
 	{
-		CreateMap<Role, GetAllRoleResponse>();
+		CreateMap<Role, GetAllRoleResponse>()
+			.ForMember(dest => dest.RoleName, opt => opt.MapFrom(src => src.Name))
+			.ForMember(dest => dest.NormalizeRoleName, opt => opt.MapFrom(src => src.NormalizedName));
 	}
 }
