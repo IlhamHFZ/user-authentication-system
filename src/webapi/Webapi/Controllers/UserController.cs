@@ -3,15 +3,12 @@ using Application.Features.UserFeatures.CreateUser;
 using Application.Features.UserFeatures.DeleteUser;
 using Application.Features.UserFeatures.GetAllUser;
 using Application.Features.UserFeatures.GetByIdUser;
-using Application.Features.UserFeatures.UpdateUser;
 using Application.Features.UserFeatures.UpdateUserAddRole;
 using Application.Features.UserFeatures.UpdateUserProfile;
 using Application.Features.UserFeatures.UpdateUserRemoveRole;
 using Application.Shared;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-using Org.BouncyCastle.Bcpg;
-using Webapi.Models.Errors.ValidationException;
 using Webapi.Models.Responses;
 using Webapi.Models.Responses.User;
 
