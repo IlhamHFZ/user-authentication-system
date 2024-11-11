@@ -31,32 +31,34 @@ public class RoleController : ControllerBase
 	}
 
 	[HttpGet]
-	[ProducesResponseType(StatusCodes.Status200OK)]
+	[ProducesResponseType<ApiResponse<IEnumerable<GetAllRoleSuccessResponse>>>(StatusCodes.Status200OK)]
 	[ProducesResponseType<ApiResponse<object>>(StatusCodes.Status404NotFound)]
-	public async Task<ActionResult<ApiResponse<IEnumerable<GetAllRoleResponse>>>> GetAllRole()
+	public async Task<IActionResult> GetAllRole()
 	{
 		_logger.LogInformation("Starting to process GetAllRole request");
 		var roles = await _roleFacade.GetAllRoleAsync();
-		
-		ApiResponse<IEnumerable<GetAllRoleResponse>> response = new ApiResponse<IEnumerable<GetAllRoleResponse>>()
+		if(!roles.Any())
 		{
-			Data = roles
-		};
-		
-		if(roles is null)
-		{
-			response.Status = StatusCodes.Status404NotFound;
-			response.Message = "roles not found";
+			var notFoundResponse = new ApiResponse<object>()
+			{
+				Status = StatusCodes.Status404NotFound,
+				Message = "roles not found",
+				Data = null
+			};
 			
 			_logger.LogWarning("Roles not found");
-			return NotFound(response);
+			return NotFound(notFoundResponse);
 		}
 		
-		response.Status = StatusCodes.Status200OK;
-		response.Message = "sucess get roles";
+		var successResponse = new ApiResponse<IEnumerable<GetAllRoleSuccessResponse>>()
+		{
+			Status = StatusCodes.Status200OK,
+			Message = "success",
+			Data = _mapper.Map<IEnumerable<GetAllRoleSuccessResponse>>(roles)
+		};
 		
 		_logger.LogInformation($"Successfully retrieve {roles.Count()} roles");
-		return Ok(response);
+		return Ok(successResponse);
 	}
 	
 	[HttpGet("{id}")]
