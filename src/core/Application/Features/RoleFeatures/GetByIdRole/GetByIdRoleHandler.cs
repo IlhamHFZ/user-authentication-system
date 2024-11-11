@@ -1,48 +1,38 @@
 using Application.Features.RoleFeatures.Interface;
 using AutoMapper;
 using Domain.Entites;
-using FluentValidation;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
-using Presistence.Repository.Interface;
 
 namespace Application.Features.RoleFeatures.GetByIdRole;
 
 public class GetByIdRoleHandler : IGetByIdRoleHandler
 {
-	private readonly IUnitofWork _unitofWork;
+	private readonly RoleManager<Role> _roleManager;
 	private readonly IMapper _mapper;
-	private readonly IValidator<GetByIdRoleRequest> _validator;
 	private readonly ILogger<GetByIdRoleHandler> _logger;
 
 	public GetByIdRoleHandler(
-		IUnitofWork unitofWork,
+		RoleManager<Role> roleManager,
 		IMapper mapper,
-		ILogger<GetByIdRoleHandler> logger,
-		IValidator<GetByIdRoleRequest> validator)
+		ILogger<GetByIdRoleHandler> logger)
 	{
-		_unitofWork = unitofWork;
+		_roleManager = roleManager;
 		_mapper = mapper;
 		_logger = logger;
-		_validator = validator;
 	}
 
 	public async Task<GetByIdRoleResponse?> HandleAsync(GetByIdRoleRequest request)
 	{
-		_logger.LogInformation($"Starting to process GetByIdRoleHandler request for role with id {request.Id}");
-		var result = await _validator.ValidateAsync(request);
-		if(!result.IsValid)
-		{
-			_logger.LogWarning($"Validation failed for GetByIdRoleHandler request for role with id {request.Id}");
-			await _validator.ValidateAndThrowAsync(request);
-		}
-		
-		var role = await _unitofWork.Repository<Role>().GetAsync(request.Id);		
+		_logger.LogInformation($"Starting to process GetByIdRoleHandler request for user with id {request.Id}");
+		var role = await _roleManager.FindByIdAsync(request.Id.ToString());
 		if(role is null)
 		{
 			_logger.LogWarning($"Role not found for role with id {request.Id}");
 			return null;
 		}
 		
+		_logger.LogInformation($"Successfully retrieved role with id {request.Id}");
 		return _mapper.Map<GetByIdRoleResponse>(role);
 	}
 }
