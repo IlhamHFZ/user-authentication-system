@@ -3,9 +3,11 @@ using Application.Features.RoleFeatures.CreateRole;
 using Application.Features.RoleFeatures.DeleteRole;
 using Application.Features.RoleFeatures.GetAllRole;
 using Application.Features.RoleFeatures.GetByIdRole;
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Webapi.Models.Errors.ValidationException;
 using Webapi.Models.Responses;
+using Webapi.Models.Responses.Role;
 
 namespace Webapi.Controllers;
 
@@ -16,11 +18,16 @@ public class RoleController : ControllerBase
 {
 	private readonly IRoleFacade _roleFacade;
 	private readonly ILogger<RoleController> _logger;
+	private readonly IMapper _mapper;
 
-	public RoleController(IRoleFacade roleFacade, ILogger<RoleController> logger)
+	public RoleController(
+		IRoleFacade roleFacade, 
+		ILogger<RoleController> logger,
+		IMapper mapper)
 	{
 		_roleFacade = roleFacade;
 		_logger = logger;
+		_mapper = mapper;
 	}
 
 	[HttpGet]
@@ -53,33 +60,35 @@ public class RoleController : ControllerBase
 	}
 	
 	[HttpGet("{id}")]
-	[ProducesResponseType(StatusCodes.Status200OK)]
+	[ProducesResponseType<ApiResponse<GetByIdRoleSuccessResponse>>(StatusCodes.Status200OK)]
 	[ProducesResponseType<ApiResponse<object>>(StatusCodes.Status404NotFound)]
-	[ProducesResponseType<ValidationErrorResponse>(StatusCodes.Status400BadRequest)]
-	public async Task<ActionResult<ApiResponse<GetByIdRoleResponse>>> GetByIdRole(Guid id)
+	public async Task<IActionResult> GetByIdRole(Guid id)
 	{
-		_logger.LogInformation($"Starting to process GetByIdRole request for role with id {id}");
+		
+		_logger.LogWarning($"Starting to preccess GetByIdRole request for role with di {id}");
 		var role = await _roleFacade.GetByIdRoleAsync(new GetByIdRoleRequest(){Id = id});
-		
-		ApiResponse<GetByIdRoleResponse> response = new ApiResponse<GetByIdRoleResponse>()
-		{
-			Data = role
-		};
-		
 		if(role is null)
 		{
-			response.Status = StatusCodes.Status404NotFound;
-			response.Message = "role not found";
+			var notFoundResponse = new ApiResponse<object>()
+			{
+				Status = StatusCodes.Status404NotFound,
+				Message = "role not found",
+				Data = null
+			};
 			
-			_logger.LogWarning($"Role with id {id} not found");
-			return NotFound(response);
+			_logger.LogWarning($"role with id {id} not found");
+			return NotFound(notFoundResponse);
 		}
 		
-		response.Status = StatusCodes.Status200OK;
-		response.Message = "success get role";
+		var successResponse = new ApiResponse<GetByIdRoleSuccessResponse>()
+		{
+			Status = StatusCodes.Status200OK,
+			Message = "success",
+			Data = _mapper.Map<GetByIdRoleSuccessResponse>(role)
+		};
 		
-		_logger.LogInformation($"Successfully retrieve user with id {id}");
-		return Ok(response);
+		_logger.LogInformation($"Successfully retrieved role with id {id}");
+		return Ok(successResponse);
 	}
 	
 	[HttpPost]
