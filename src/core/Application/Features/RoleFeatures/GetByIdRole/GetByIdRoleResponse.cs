@@ -4,4 +4,5 @@ public record GetByIdRoleResponse
 {
 	public Guid Id {get; set;}
 	public string RoleName {get; set;} = null!;
+	public string NormalizeRoleName {get; set;} = null!;
 }
