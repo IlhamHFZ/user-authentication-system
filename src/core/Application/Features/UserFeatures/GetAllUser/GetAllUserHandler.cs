@@ -24,13 +24,13 @@ public class GetAllUserHandler : IGetAllUserHandler
 		_logger = logger;
 	}
 
-	public  Task<IEnumerable<GetAllUserResponse>> HandleAsync(GetAllUserRequest request)
+	public async Task<IEnumerable<GetAllUserResponse>> HandleAsync(GetAllUserRequest request)
 	{
 		_logger.LogInformation($"Starting to process GetAllUserHandler request");
 		if(request.QueryParameters.Pagination.PageSize <= 0 || request.QueryParameters.Pagination.PageCurrent <= 0)
 		{
 			_logger.LogWarning($"Page size: {request.QueryParameters.Pagination.PageSize}, Page Current: {request.QueryParameters.Pagination.PageCurrent}, can not take negative number");
-			return Task.FromResult(Enumerable.Empty<GetAllUserResponse>());
+			return Enumerable.Empty<GetAllUserResponse>();
 		}
 		
 		if(string.IsNullOrWhiteSpace(request.QueryParameters.Filtering.FilterQuery))
@@ -65,11 +65,11 @@ public class GetAllUserHandler : IGetAllUserHandler
 		var skipData = (request.QueryParameters.Pagination.PageCurrent - 1) * request.QueryParameters.Pagination.PageSize;
 		_logger.LogInformation($"Calculated skip data: {skipData}");
 		
-		var users = _userManager.Users
+		var users = await Task.Run(() => _userManager.Users
 			.AsNoTracking()
 			.Where(expressionFilter)
 			.Skip(skipData)
-			.Take(request.QueryParameters.Pagination.PageSize);
+			.Take(request.QueryParameters.Pagination.PageSize));
 		_logger.LogInformation($"Filtered and pagination users. Now applying sorting");
 		
 		users = request.QueryParameters.Sorting.IsAscending ? users.OrderBy(expressionSort) : users.OrderByDescending(expressionSort);
@@ -78,10 +78,10 @@ public class GetAllUserHandler : IGetAllUserHandler
 		if(users is null)
 		{
 			_logger.LogWarning("No users found for the given criteria");
-			return Task.FromResult(Enumerable.Empty<GetAllUserResponse>());
+			return Enumerable.Empty<GetAllUserResponse>();
 		}
 		
 		_logger.LogInformation($"Successfully retrieved {users.Count()} users for the given criteria");
-		return Task.FromResult(_mapper.Map<IEnumerable<GetAllUserResponse>>(users));
+		return _mapper.Map<IEnumerable<GetAllUserResponse>>(users);
 	}
 }
