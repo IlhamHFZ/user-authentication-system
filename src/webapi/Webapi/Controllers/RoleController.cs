@@ -94,22 +94,34 @@ public class RoleController : ControllerBase
 	}
 	
 	[HttpPost]
-	[ProducesResponseType(StatusCodes.Status200OK)]
-	[ProducesResponseType<ValidationErrorResponse>(StatusCodes.Status400BadRequest)]
-	public async Task<ActionResult<ApiResponse<CreateRoleResponse>>> CreateRole([FromBody] CreateRoleRequest request)
+	[ProducesResponseType<ApiResponse<CreateRoleSuccessResponse>>(StatusCodes.Status200OK)]
+	[ProducesResponseType<ApiResponse<CreateRoleFailedResponse>>(StatusCodes.Status400BadRequest)]
+	public async Task<ActionResult<ApiResponse<CreateRoleResponse>>> PostRole([FromBody] CreateRoleRequest request)
 	{
-		_logger.LogInformation($"Starting to process CreateRole request for role with name {request.Name}");
+		_logger.LogInformation($"Starting to process CreateRole request for role with name {request.RoleName}");
 		var role = await _roleFacade.CreateRoleAsync(request);
+		if(!role.IsSuccess)
+		{
+			var badRequestResponse = new ApiResponse<CreateRoleFailedResponse>()
+			{
+				Status = StatusCodes.Status400BadRequest,
+				Message = "failed created new role",
+				Data = _mapper.Map<CreateRoleFailedResponse>(role)
+			};
+			
+			_logger.LogWarning($"Role with name {request.RoleName} failed created new role");
+			return BadRequest(badRequestResponse);
+		}
 		
-		ApiResponse<CreateRoleResponse> response = new ApiResponse<CreateRoleResponse>()
+		var successResponse = new ApiResponse<CreateRoleSuccessResponse>()
 		{
 			Status = StatusCodes.Status200OK,
-			Message = "success created new role",
-			Data = role
+			Message = "success",
+			Data = _mapper.Map<CreateRoleSuccessResponse>(role)
 		};
 		
-		_logger.LogInformation($"Role with name {request.Name} successfully created");
-		return Ok(response);
+		_logger.LogInformation($"Role with name {request.RoleName} successfully created");
+		return Ok(successResponse);
 	}
 	
 	[HttpDelete("{id}")]
