@@ -25,13 +25,8 @@ public class CreateUserHandler : ICreateUserHandler
 	public async Task<CreateUserResponse> HandleAsync(CreateUserRequest request)
 	{
 		_logger.LogInformation($"Starting to process CreateUserHandler for user with email {request.Email}");
-		var newUser = new User()
-		{
-			UserName = request.UserName,
-			Email = request.Email,
-			DisplayName = request.DisplayName,
-			NormalizeDisplayName = request.DisplayName.ToUpperInvariant()
-		};
+		var newUser = _mapper.Map<User>(request);
+		newUser.NormalizeDisplayName = request.DisplayName.ToUpperInvariant();
 
 		_logger.LogInformation($"Create user for user with email {request.Email}");
 		var identityResult =  await _userManager.CreateAsync(newUser, request.Password);
