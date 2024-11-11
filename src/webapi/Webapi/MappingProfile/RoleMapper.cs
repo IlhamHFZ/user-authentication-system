@@ -1,3 +1,4 @@
+using Application.Features.RoleFeatures.CreateRole;
 using Application.Features.RoleFeatures.DeleteRole;
 using Application.Features.RoleFeatures.GetAllRole;
 using Application.Features.RoleFeatures.GetByIdRole;
@@ -16,5 +17,8 @@ public class RoleMapper : Profile
 		
 		CreateMap<DeleteRoleResponse, DeleteRoleSuccessResponse>();
 		CreateMap<DeleteRoleResponse, DeleteRoleFailedResponse>();
+		
+		CreateMap<CreateRoleResponse, CreateRoleSuccessResponse>();
+		CreateMap<CreateRoleResponse, CreateRoleFailedResponse>();
 	}
 }
