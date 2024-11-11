@@ -113,32 +113,47 @@ public class RoleController : ControllerBase
 	}
 	
 	[HttpDelete("{id}")]
-	[ProducesResponseType(StatusCodes.Status200OK)]
+	[ProducesResponseType<ApiResponse<DeleteRoleSuccessResponse>>(StatusCodes.Status200OK)]
 	[ProducesResponseType<ApiResponse<object>>(StatusCodes.Status404NotFound)]
-	[ProducesResponseType<ValidationErrorResponse>(StatusCodes.Status400BadRequest)]
-	public async Task<ActionResult<ApiResponse<DeleteRoleResponse>>> DeleteRole(Guid id)
+	[ProducesResponseType<ApiResponse<DeleteRoleFailedResponse>>(StatusCodes.Status400BadRequest)]
+	public async Task<IActionResult> DeleteRole(Guid id)
 	{
 		_logger.LogInformation($"Starting to process DeleteUser request for role with id {id}");
 		var role = await _roleFacade.DeleteRoleAsync(new DeleteRoleRequest(){Id = id});
-		
-		ApiResponse<DeleteRoleResponse> response = new ApiResponse<DeleteRoleResponse>()
-		{
-			Data = role
-		};
-		
 		if(role is null)
 		{
-			response.Status = StatusCodes.Status404NotFound;
-			response.Message = "role not found";
+			var notFoundResponse = new ApiResponse<object>()
+			{
+				Status = StatusCodes.Status404NotFound,
+				Message = "role not found",
+				Data = null
+			};
 			
 			_logger.LogWarning($"Role with id {id} not found");
-			return NotFound(response);
+			return NotFound(notFoundResponse);
 		}
 		
-		response.Status = StatusCodes.Status200OK;
-		response.Message = "success deleted role";
+		if(!role.IsSuccess)
+		{
+			var badRequestResponse = new ApiResponse<DeleteRoleFailedResponse>()
+			{
+				Status = StatusCodes.Status400BadRequest,
+				Message = "failed deleted role",
+				Data = _mapper.Map<DeleteRoleFailedResponse>(role)
+			};
+			
+			_logger.LogWarning($"User with id {id} failed deleted");
+			return BadRequest(badRequestResponse);
+		}
+		
+		var successResponse = new ApiResponse<DeleteRoleSuccessResponse>()
+		{
+			Status = StatusCodes.Status200OK,
+			Message = "success",
+			Data = _mapper.Map<DeleteRoleSuccessResponse>(role)
+		};
 		
 		_logger.LogInformation($"Successfully deleted user with id {id}");
-		return Ok(response);
+		return Ok(successResponse);
 	}
 }
