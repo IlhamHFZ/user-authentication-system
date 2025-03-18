@@ -8,6 +8,7 @@ using Application.Features.UserFeatures.UpdateUserProfile;
 using Application.Features.UserFeatures.UpdateUserRemoveRole;
 using Application.Shared;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Webapi.Models.Responses;
 using Webapi.Models.Responses.User;
@@ -17,6 +18,7 @@ namespace Webapi.Controllers;
 [ApiController]
 [Route("api/[controller]")]
 [Produces("application/json")]
+[Authorize]
 public class UserController : ControllerBase
 {
 	private readonly IUserFacade _userFacade;
