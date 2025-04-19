@@ -23,6 +23,7 @@ public class InternalRegisterHandler : IInternalRegisterHandler
     public Task<InternalRegisterResponse> HandleAsync(InternalRegisterRequest request)
     {
         // cek apakah email tidak terdaftar
+        var isEmailExist = _userManager.
         // jika iya, lanjut register
         // jika tidak, return error email sudah terdaftar
         
@@ -34,7 +35,10 @@ public class InternalRegisterHandler : IInternalRegisterHandler
         // jika iya, lanjut register
         // jika tidak, return error password tidak sama
         
-        // 
+        // cek username valid
+        
+        // cek display name valid
+        
         
     }
 }
