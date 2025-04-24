@@ -23,9 +23,18 @@ public class InternalRegisterHandler : IInternalRegisterHandler
     public Task<InternalRegisterResponse> HandleAsync(InternalRegisterRequest request)
     {
         // cek apakah email tidak terdaftar
-        var isEmailExist = _userManager.
+        var isEmailExist = _userManager.Users.Where(x => x.Email == request.Email).Any();
+        if (isEmailExist)
+        {
+            _logger.LogInformation($"Email {request.Email} has been registered");
+            return Task.FromResult(new InternalRegisterResponse
+            {
+                IsSuccess = false,
+                Message = "Email has registered"
+            });
+        }
         // jika iya, lanjut register
-        // jika tidak, return error email sudah terdaftar
+        
         
         // cek kevalidan password
         // jika iya, lanjut register
