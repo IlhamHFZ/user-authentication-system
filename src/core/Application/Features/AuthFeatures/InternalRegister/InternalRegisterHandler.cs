@@ -49,18 +49,23 @@ public class InternalRegisterHandler : IInternalRegisterHandler
         };
         
         var isPasswordValid = await _passwordValidator.ValidateAsync(_userManager, newUser, request.Password);
-        // cek kevalidan password
-        // jika iya, lanjut register
-        // jika tidak, return error password tidak valid
+        if (!isPasswordValid.Succeeded)
+        {
+            response.IsSuccess = isPasswordValid.Succeeded;
+            response.Message = string.Join(",",isPasswordValid.Errors.Select(x => x.Description));
+            
+            return response;
+        }
         
-        // validasi apakah paswword sama dengan confirm password
-        // jika iya, lanjut register
-        // jika tidak, return error password tidak sama
+        if (request.Password != request.ConfirmPassword)
+        {
+            response.IsSuccess = false;
+            response.Message = "Password and Confirm Password not match";
+            return response;
+        }
         
         // cek username valid
-        
+        var isUsernameValid = 
         // cek display name valid
-        
-        
     }
 }
