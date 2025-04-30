@@ -10,14 +10,12 @@ public class InternalRegisterHandler : IInternalRegisterHandler
 {
     private readonly UserManager<User> _userManager;
     private readonly ILogger<IInternalRegisterHandler> _logger;
-    private readonly IPasswordValidator<User> _passwordValidator;
     private readonly IConfiguration _config;
 
-    public InternalRegisterHandler(IConfiguration config, ILogger<IInternalRegisterHandler> logger, UserManager<User> userManager, IPasswordValidator<User> passwordValidator)
+    public InternalRegisterHandler(IConfiguration config, ILogger<IInternalRegisterHandler> logger, UserManager<User> userManager)
     {
         _logger = logger;
         _config = config;
-        _passwordValidator = passwordValidator;
         _userManager = userManager;
 
     }
@@ -48,7 +46,7 @@ public class InternalRegisterHandler : IInternalRegisterHandler
             NormalizeDisplayName = request.DisplayName.ToUpper()
         };
         
-        var isPasswordValid = await _passwordValidator.ValidateAsync(_userManager, newUser, request.Password);
+        var isPasswordValid = await _userManager.Vali
         if (!isPasswordValid.Succeeded)
         {
             response.IsSuccess = isPasswordValid.Succeeded;
@@ -65,7 +63,7 @@ public class InternalRegisterHandler : IInternalRegisterHandler
         }
         
         // cek username valid
-        var isUsernameValid = 
+        var isUsernameValid = await _
         // cek display name valid
     }
 }
