@@ -46,7 +46,7 @@ public class InternalRegisterHandler : IInternalRegisterHandler
             NormalizeDisplayName = request.DisplayName.ToUpper()
         };
         
-        var isPasswordValid = await _userManager.Vali
+        var isPasswordValid = _userManager.PasswordValidators.
         if (!isPasswordValid.Succeeded)
         {
             response.IsSuccess = isPasswordValid.Succeeded;
@@ -63,7 +63,7 @@ public class InternalRegisterHandler : IInternalRegisterHandler
         }
         
         // cek username valid
-        var isUsernameValid = await _
+        var isUsernameValid = await 
         // cek display name valid
     }
 }
